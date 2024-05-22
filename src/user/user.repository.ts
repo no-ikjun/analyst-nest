@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/global/entities/user.entity';
 import { DataSource, EntityManager } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { UserDataType } from 'src/global/types/response.type';
 
 @Injectable()
 export class UserRepository {
@@ -11,14 +12,22 @@ export class UserRepository {
     private readonly jwtService: JwtService,
   ) {}
 
+  async findOneByEmail(email: string): Promise<UserDataType> {
+    const user = await this.dataSource.manager.findOne(User, {
+      where: { email: email },
+    });
+    if (!user) return null;
+    return { id: user.id, email: user.email, password: user.password };
+  }
+
   async findOneByUserId(
     transctionEntityManager: EntityManager,
     id: number,
-  ): Promise<User> {
+  ): Promise<UserDataType> {
     const user = await transctionEntityManager.findOne(User, {
       where: { id: id },
     });
-    return user;
+    return { id: user.id, email: user.email, password: user.password };
   }
 
   async setNewUser(
