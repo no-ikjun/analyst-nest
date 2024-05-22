@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
+import { User } from 'src/global/entities/user.entity';
 
 @Injectable()
 export class DatabaseService implements TypeOrmOptionsFactory {
@@ -15,7 +16,7 @@ export class DatabaseService implements TypeOrmOptionsFactory {
       host: this.configService.get<string>('DATABASE_HOST'),
       database: this.configService.get<string>('DATABASE_NAME'),
       timezone: '+09:00',
-      entities: [],
+      entities: [User],
       synchronize: true,
     };
   }
