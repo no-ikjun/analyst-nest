@@ -39,7 +39,7 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd analyst-nest
-            git pull
+            sudo git pull
             sudo npm install
             sudo npm run build
             sudo pm2 restart all
