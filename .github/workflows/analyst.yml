@@ -33,4 +33,4 @@ jobs:
             echo "Checking PM2 list"
             sudo pm2 list
             echo "Restarting pm2"
-            sudo pm2 restart analyst || sudo pm2 start dist/main.js --name analyst
+            sudo pm2 reload analyst || sudo pm2 start dist/main.js --name analyst
