@@ -5,6 +5,11 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  @Get()
+  getHello() {
+    return 'pong';
+  }
+
   @Get('stock')
   async fetchApiData(@Query('query') query: string) {
     return this.appService.fetchApiData(query);
