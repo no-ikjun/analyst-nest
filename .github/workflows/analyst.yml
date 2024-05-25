@@ -31,5 +31,5 @@ jobs:
             echo "Running npm run build"
             sudo npm run build
             echo "Restarting pm2"
-            sudo pm2 restart all
-          timeout: 60m # 타임아웃을 60분으로 설정
+            sudo pm2 restart analyst
+          timeout: 1m # 타임아웃을 60분으로 설정
