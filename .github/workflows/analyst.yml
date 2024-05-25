@@ -30,6 +30,7 @@ jobs:
             sudo npm ci
             echo "Running npm run build"
             sudo npm run build
+            echo "Checking PM2 list"
+            sudo pm2 list
             echo "Restarting pm2"
-            sudo pm2 restart analyst
-          timeout: 5m
+            sudo pm2 restart analyst || sudo pm2 start dist/main.js --name analyst
