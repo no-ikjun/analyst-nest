@@ -11,10 +11,10 @@ export class GptService {
     this.openai = new OpenAI({ apiKey });
   }
 
-  async testGpt() {
+  async testGpt(text: string) {
     const completion = await this.openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
-      messages: [{ role: 'system', content: 'You are a helpful assistant.' }],
+      messages: [{ role: 'system', content: text }],
     });
     return completion;
   }
