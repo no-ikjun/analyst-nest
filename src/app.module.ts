@@ -9,6 +9,7 @@ import { DatabaseModule } from './global/config/database/database.module';
 import { DatabaseService } from './global/config/database/database.service';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { KisModule } from './kis/kis.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { UserModule } from './user/user.module';
     GptModule,
     AuthModule,
     UserModule,
+    KisModule,
   ],
   controllers: [AppController],
   providers: [AppService, DatabaseService, ConfigService],

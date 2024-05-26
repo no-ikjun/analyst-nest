@@ -3,6 +3,9 @@ import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from 'src/user/user.repository';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
+import { KisTokenResponseType } from 'src/global/types/response.type';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -10,6 +13,7 @@ export class AuthService {
     private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly httpService: HttpService,
   ) {}
 
   async login(email: string, password: string) {
