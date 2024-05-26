@@ -3,6 +3,9 @@ import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from 'src/user/user.repository';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
+import { KisTokenResponseType } from 'src/global/types/response.type';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -10,6 +13,7 @@ export class AuthService {
     private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly httpService: HttpService,
   ) {}
 
   async login(email: string, password: string) {
@@ -40,5 +44,34 @@ export class AuthService {
       secret: jwtAccessTokenSecret,
       expiresIn: jwtAccessTokenExpire,
     });
+  }
+
+  async getKisToken(): Promise<KisTokenResponseType> {
+    const kisAppKey = this.configService.get('KIS_APP_KEY');
+    const kisAppSecret = this.configService.get('KIS_APP_SECRET');
+    try {
+      const response = await firstValueFrom(
+        this.httpService.post(
+          'https://openapi.koreainvestment.com:9443/oauth2/tokenP',
+          {
+            grant_type: 'client_credentials',
+            appkey: kisAppKey,
+            appsecret: kisAppSecret,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          },
+        ),
+      );
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(
+        'KIS Token request failed',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }

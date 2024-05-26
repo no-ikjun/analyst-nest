@@ -17,4 +17,10 @@ export class AuthController {
   async validate() {
     return 'Valid Token';
   }
+
+  @UseGuards(AuthGuard)
+  @Post('kis-token')
+  async getKisToken() {
+    return await this.authService.getKisToken();
+  }
 }
