@@ -45,33 +45,4 @@ export class AuthService {
       expiresIn: jwtAccessTokenExpire,
     });
   }
-
-  async getKisToken(): Promise<KisTokenResponseType> {
-    const kisAppKey = this.configService.get('KIS_APP_KEY');
-    const kisAppSecret = this.configService.get('KIS_APP_SECRET');
-    try {
-      const response = await firstValueFrom(
-        this.httpService.post(
-          'https://openapi.koreainvestment.com:9443/oauth2/tokenP',
-          {
-            grant_type: 'client_credentials',
-            appkey: kisAppKey,
-            appsecret: kisAppSecret,
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          },
-        ),
-      );
-      return response.data;
-    } catch (error) {
-      console.error(error);
-      throw new HttpException(
-        'KIS Token request failed',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-  }
 }
