@@ -6,7 +6,7 @@ export class KisToken {
   id: number;
 
   @Column('blob')
-  access_token: string;
+  access_token: Buffer;
 
   @Column()
   token_type: string;

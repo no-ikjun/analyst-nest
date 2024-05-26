@@ -43,7 +43,23 @@ export class KisService {
           appsecret: kisAppSecret,
         }),
       );
-      return response.data;
+      const tokenResponse = response.data as KisTokenResponseType;
+
+      const tokenExpirationDate = new Date();
+      tokenExpirationDate.setSeconds(
+        tokenExpirationDate.getSeconds() + tokenResponse.expires_in,
+      );
+
+      const newToken = this.kisTokenRepository.create({
+        access_token: Buffer.from(tokenResponse.access_token),
+        token_type: tokenResponse.token_type,
+        expires_in: tokenResponse.expires_in,
+        access_token_token_expired: tokenExpirationDate,
+      });
+
+      await this.kisTokenRepository.save(newToken);
+
+      return tokenResponse;
     } catch (error) {
       console.error(error);
       throw new HttpException(
