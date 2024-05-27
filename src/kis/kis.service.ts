@@ -68,4 +68,32 @@ export class KisService {
       );
     }
   }
+
+  async getKisStockInfo(stockCode: string) {
+    const kisToken = await this.getKisToken();
+    try {
+      const response = await firstValueFrom(
+        this.httpService.get(
+          `${this.baseUrl}/uapi/domestic-stock/v1/quotations/search-stock-info?PDNO=${stockCode}&PRDT_TYPE_CD=300`,
+          {
+            headers: {
+              Authorization: `Bearer ${kisToken.access_token}`,
+              appkey: this.configService.get('KIS_APP_KEY'),
+              appsecret: this.configService.get('KIS_APP_SECRET'),
+              custtype: 'P',
+              'Content-Type': 'application/json',
+              tr_id: 'CTPF1002R',
+            },
+          },
+        ),
+      );
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(
+        'KIS Stock Info request failed',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
 }
