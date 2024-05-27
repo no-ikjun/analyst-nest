@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { KisService } from './kis.service';
 import { KisTokenResponseType } from 'src/global/types/response.type';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -17,5 +17,19 @@ export class KisController {
   @Get('stock-info')
   async getStockInfo(@Query('code') code: string) {
     return this.kisService.getKisStockInfo(code);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('add-interest')
+  async addInterest(@Query('code') code: string, @Req() req) {
+    const accessToken = req.headers.authorization.split(' ')[1];
+    return this.kisService.addInterest(code, accessToken);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('interest-list')
+  async getInterestList(@Req() req) {
+    const accessToken = req.headers.authorization.split(' ')[1];
+    return this.kisService.getInterestList(accessToken);
   }
 }

@@ -2,8 +2,10 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Interest } from './interest.entity';
 
 @Entity('user')
 export class User {
@@ -18,4 +20,7 @@ export class User {
 
   @CreateDateColumn()
   created_at: Date;
+
+  @OneToMany(() => Interest, (interest) => interest.user)
+  interests: Interest[];
 }
