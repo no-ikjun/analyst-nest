@@ -26,8 +26,8 @@ jobs:
             cd analyst-nest
             echo "Running git pull"
             sudo git pull
-            echo "Running npm ci"
-            sudo npm ci
+            echo "Running npm install"
+            sudo npm install
             echo "Running npm run build"
             sudo npm run build
             echo "Checking PM2 list"
