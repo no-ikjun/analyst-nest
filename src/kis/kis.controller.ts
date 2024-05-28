@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { KisService } from './kis.service';
 import { KisTokenResponseType } from 'src/global/types/response.type';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -31,5 +39,12 @@ export class KisController {
   async getInterestList(@Req() req) {
     const accessToken = req.headers.authorization.split(' ')[1];
     return this.kisService.getInterestList(accessToken);
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete('delete-interest')
+  async deleteInterest(@Query('code') code: string, @Req() req) {
+    const accessToken = req.headers.authorization.split(' ')[1];
+    return this.kisService.deleteInterest(code, accessToken);
   }
 }
