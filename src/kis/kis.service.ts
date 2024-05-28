@@ -142,4 +142,13 @@ export class KisService {
       where: { user: { id: userId }, code: stockCode },
     });
   }
+
+  async deleteInterest(stockCode: string, accessToken: string) {
+    const interest = await this.getInterestByCode(stockCode, accessToken);
+    if (!interest) {
+      throw new HttpException('Not found', HttpStatus.BAD_REQUEST);
+    }
+    await this.interestRepository.delete(interest);
+    return interest;
+  }
 }
