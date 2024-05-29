@@ -41,4 +41,24 @@ export class UserRepository {
     await transctionEntityManager.save(user);
     return user;
   }
+
+  async getUserPref(transctionEntityManager, id: number): Promise<number> {
+    const user = await transctionEntityManager.findOne(User, {
+      where: { id: id },
+    });
+    return user.preference;
+  }
+
+  async setUserPref(
+    transctionEntityManager: EntityManager,
+    id: number,
+    preference: number,
+  ): Promise<number> {
+    await transctionEntityManager.update(
+      User,
+      { id: id },
+      { preference: preference },
+    );
+    return preference;
+  }
 }

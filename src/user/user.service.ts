@@ -35,4 +35,18 @@ export class UserService {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
   }
+
+  async getUserPref(accessToken: string) {
+    const id = this.jwtService.decode(accessToken).id;
+    return await this.userRepository.getUserPref(this.dataSource.manager, id);
+  }
+
+  async setUserPref(accessToken: string, preference: number) {
+    const id = this.jwtService.decode(accessToken).id;
+    return await this.userRepository.setUserPref(
+      this.dataSource.manager,
+      id,
+      preference,
+    );
+  }
 }
