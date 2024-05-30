@@ -10,10 +10,14 @@ import { DatabaseService } from './global/config/database/database.service';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { KisModule } from './kis/kis.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TaskModule } from './task/task.module';
+import { MessageModule } from './message/message.module';
 
 @Module({
   imports: [
     HttpModule,
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       cache: true,
       isGlobal: true,
@@ -29,6 +33,9 @@ import { KisModule } from './kis/kis.module';
     AuthModule,
     UserModule,
     KisModule,
+    ScheduleModule,
+    TaskModule,
+    MessageModule,
   ],
   controllers: [AppController],
   providers: [AppService, DatabaseService, ConfigService],

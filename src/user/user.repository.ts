@@ -61,4 +61,8 @@ export class UserRepository {
     );
     return preference;
   }
+
+  async getAllUsers(transctionEntityManager: EntityManager): Promise<User[]> {
+    return await transctionEntityManager.find(User);
+  }
 }

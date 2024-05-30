@@ -8,6 +8,12 @@ import { Interest } from 'src/global/entities/interest.entity';
 import { KisToken } from 'src/global/entities/kistoken.entity';
 import { KisTokenResponseType } from 'src/global/types/response.type';
 import { MoreThan, Repository } from 'typeorm';
+import { BalanceSheetType } from './types/balanceSheet.type';
+import { OperatingProfitType } from './types/operatingProfit.type';
+import { FinancialRatioType } from './types/financialRatio.type';
+import { ProfitRatioType } from './types/profitRatio.type';
+import { GrowthRatioType } from './types/growthRatio.type';
+import { RealTimePriceType } from './types/realtimePrice.type';
 
 @Injectable()
 export class KisService {
@@ -133,6 +139,12 @@ export class KisService {
     });
   }
 
+  async getInterestListByUserId(userId: number): Promise<Interest[]> {
+    return await this.interestRepository.find({
+      where: { user: { id: userId } },
+    });
+  }
+
   async getInterestByCode(
     stockCode: string,
     accessToken: string,
@@ -150,5 +162,230 @@ export class KisService {
     }
     await this.interestRepository.delete(interest);
     return interest;
+  }
+
+  ///대차대조표 조회
+  async getBalanceSheet(stockCode: string): Promise<BalanceSheetType[]> {
+    const kisToken = await this.getKisToken();
+    try {
+      const response = await firstValueFrom(
+        this.httpService.get(
+          `${this.baseUrl}/uapi/domestic-stock/v1/finance/balance-sheet?fid_input_iscd=${stockCode}&FID_DIV_CLS_CODE=1&fid_cond_mrkt_div_code=J`,
+          {
+            headers: {
+              Authorization: `Bearer ${kisToken.access_token}`,
+              appkey: this.configService.get('KIS_APP_KEY'),
+              appsecret: this.configService.get('KIS_APP_SECRET'),
+              custtype: 'P',
+              'Content-Type': 'application/json',
+              tr_id: 'FHKST66430100',
+            },
+          },
+        ),
+      );
+      if (response.data.rt_cd !== '0') {
+        return [];
+      }
+      return response.data.output;
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(
+        'KIS Balance Sheet request failed',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  ///손익계산서 조회
+  async getOperatingProfit(stockCode: string): Promise<OperatingProfitType[]> {
+    const kisToken = await this.getKisToken();
+    try {
+      const response = await firstValueFrom(
+        this.httpService.get(
+          `${this.baseUrl}/uapi/domestic-stock/v1/finance/income-statement?fid_input_iscd=${stockCode}&FID_DIV_CLS_CODE=1&fid_cond_mrkt_div_code=J`,
+          {
+            headers: {
+              Authorization: `Bearer ${kisToken.access_token}`,
+              appkey: this.configService.get('KIS_APP_KEY'),
+              appsecret: this.configService.get('KIS_APP_SECRET'),
+              custtype: 'P',
+              'Content-Type': 'application/json',
+              tr_id: 'FHKST66430200',
+            },
+          },
+        ),
+      );
+      if (response.data.rt_cd !== '0') {
+        return [];
+      }
+      return response.data.output;
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(
+        'KIS Operating Profit request failed',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  //재무비율 조회
+  async getFinancialRatio(stockCode: string): Promise<FinancialRatioType[]> {
+    const kisToken = await this.getKisToken();
+    try {
+      const response = await firstValueFrom(
+        this.httpService.get(
+          `${this.baseUrl}/uapi/domestic-stock/v1/finance/financial-ratio?fid_input_iscd=${stockCode}&FID_DIV_CLS_CODE=1&fid_cond_mrkt_div_code=J`,
+          {
+            headers: {
+              Authorization: `Bearer ${kisToken.access_token}`,
+              appkey: this.configService.get('KIS_APP_KEY'),
+              appsecret: this.configService.get('KIS_APP_SECRET'),
+              custtype: 'P',
+              'Content-Type': 'application/json',
+              tr_id: 'FHKST66430300',
+            },
+          },
+        ),
+      );
+      if (response.data.rt_cd !== '0') {
+        return [];
+      }
+      return response.data.output;
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(
+        'KIS Financial Ratio request failed',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  ///수익성비율 조회
+  async getProfitRatio(stockCode: string): Promise<ProfitRatioType[]> {
+    const kisToken = await this.getKisToken();
+    try {
+      const response = await firstValueFrom(
+        this.httpService.get(
+          `${this.baseUrl}/uapi/domestic-stock/v1/finance/profit-ratio?fid_input_iscd=${stockCode}&FID_DIV_CLS_CODE=1&fid_cond_mrkt_div_code=J`,
+          {
+            headers: {
+              Authorization: `Bearer ${kisToken.access_token}`,
+              appkey: this.configService.get('KIS_APP_KEY'),
+              appsecret: this.configService.get('KIS_APP_SECRET'),
+              custtype: 'P',
+              'Content-Type': 'application/json',
+              tr_id: 'FHKST66430400',
+            },
+          },
+        ),
+      );
+      if (response.data.rt_cd !== '0') {
+        return [];
+      }
+      return response.data.output;
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(
+        'KIS Profit Ratio request failed',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  ///안정성 비율 조회
+  async getStabilityRatio(stockCode: string) {
+    const kisToken = await this.getKisToken();
+    try {
+      const response = await firstValueFrom(
+        this.httpService.get(
+          `${this.baseUrl}/uapi/domestic-stock/v1/finance/stability-ratio?fid_input_iscd=${stockCode}&FID_DIV_CLS_CODE=1&fid_cond_mrkt_div_code=J`,
+          {
+            headers: {
+              Authorization: `Bearer ${kisToken.access_token}`,
+              appkey: this.configService.get('KIS_APP_KEY'),
+              appsecret: this.configService.get('KIS_APP_SECRET'),
+              custtype: 'P',
+              'Content-Type': 'application/json',
+              tr_id: 'FHKST66430600',
+            },
+          },
+        ),
+      );
+      if (response.data.rt_cd !== '0') {
+        return [];
+      }
+      return response.data.output;
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(
+        'KIS Stability Ratio request failed',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  ///성장성 비율 조회
+  async getGrowthRatio(stockCode: string): Promise<GrowthRatioType[]> {
+    const kisToken = await this.getKisToken();
+    try {
+      const response = await firstValueFrom(
+        this.httpService.get(
+          `${this.baseUrl}/uapi/domestic-stock/v1/finance/growth-ratio?fid_input_iscd=${stockCode}&FID_DIV_CLS_CODE=1&fid_cond_mrkt_div_code=J`,
+          {
+            headers: {
+              Authorization: `Bearer ${kisToken.access_token}`,
+              appkey: this.configService.get('KIS_APP_KEY'),
+              appsecret: this.configService.get('KIS_APP_SECRET'),
+              custtype: 'P',
+              'Content-Type': 'application/json',
+              tr_id: 'FHKST66430800',
+            },
+          },
+        ),
+      );
+      if (response.data.rt_cd !== '0') {
+        return [];
+      }
+      return response.data.output;
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(
+        'KIS Growth Ratio request failed',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  ///실시간 주가 조회
+  async getRealTimeStockPrice(stockCode: string): Promise<RealTimePriceType> {
+    const kisToken = await this.getKisToken();
+    try {
+      const response = await firstValueFrom(
+        this.httpService.get(
+          `${this.baseUrl}/uapi/domestic-stock/v1/quotations/inquire-price?FID_INPUT_ISCD=${stockCode}&FID_COND_MRKT_DIV_CODE=J`,
+          {
+            headers: {
+              Authorization: `Bearer ${kisToken.access_token}`,
+              appkey: this.configService.get('KIS_APP_KEY'),
+              appsecret: this.configService.get('KIS_APP_SECRET'),
+              custtype: 'P',
+              'Content-Type': 'application/json',
+              tr_id: 'FHKST01010100',
+            },
+          },
+        ),
+      );
+      return {
+        stck_prpr: response.data.output.stck_prpr,
+        prdy_vrss: response.data.output.prdy_vrss,
+        prdy_ctrt: response.data.output.prdy_ctrt,
+      };
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(
+        'KIS Stock Info request failed',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }

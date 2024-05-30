@@ -49,4 +49,8 @@ export class UserService {
       preference,
     );
   }
+
+  async getAllUsers() {
+    return await this.userRepository.getAllUsers(this.dataSource.manager);
+  }
 }
