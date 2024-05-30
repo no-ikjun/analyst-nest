@@ -519,7 +519,7 @@ export class KisService {
       return {
         last: response.data.output.last,
         t_xprc: response.data.output.t_xprc,
-        p_xdif: response.data.output.p_xdif,
+        t_xdif: response.data.output.t_xdif,
         t_xrat: response.data.output.t_xrat,
       };
     } catch (error) {
