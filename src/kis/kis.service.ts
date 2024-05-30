@@ -139,6 +139,12 @@ export class KisService {
     });
   }
 
+  async getInterestListByUserId(userId: number): Promise<Interest[]> {
+    return await this.interestRepository.find({
+      where: { user: { id: userId } },
+    });
+  }
+
   async getInterestByCode(
     stockCode: string,
     accessToken: string,

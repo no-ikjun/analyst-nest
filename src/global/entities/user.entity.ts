@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Interest } from './interest.entity';
+import { Message } from './message.entity';
 
 @Entity('user')
 export class User {
@@ -26,4 +27,7 @@ export class User {
 
   @Column({ default: 1 })
   preference: number;
+
+  @OneToMany(() => Message, (message) => message.user)
+  message: Message[];
 }
