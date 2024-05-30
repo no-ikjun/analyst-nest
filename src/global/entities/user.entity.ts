@@ -23,4 +23,7 @@ export class User {
 
   @OneToMany(() => Interest, (interest) => interest.user)
   interests: Interest[];
+
+  @Column({ default: 1 })
+  preference: number;
 }
