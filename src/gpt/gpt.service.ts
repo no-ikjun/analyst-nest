@@ -98,6 +98,8 @@ export class GptService {
     - Total Assets Growth Rate: ${growth_ratios.totl_aset_inrt}
     
     Provide a comprehensive analysis of this data, including insights on the company's financial health, performance trends, and investment potential. Highlight any areas of concern or notable strengths.
+
+    Show me the financial report in "Korean".
     `;
 
     const completion = await this.openai.chat.completions.create({
