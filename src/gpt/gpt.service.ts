@@ -34,7 +34,7 @@ export class GptService {
     growth_ratios: GrowthRatioType,
   ) {
     const prompt = `
-    Create a comprehensive financial report based on the following data. The report should include an analysis of the balance sheet, income statement, financial ratios, profitability ratios, stability ratios, and growth ratios. For each section, provide insights on the company's financial health, performance, and potential investment value. Summarize key findings and provide actionable investment advice.
+    Create a comprehensive financial report based on the following data. The report should include an analysis of the balance sheet, income statement, financial ratios, profitability ratios, stability ratios, and growth ratios. For each section, provide insights on the company's financial health, performance, and potential investment value. Summarize key findings and provide actionable investment advice. Use investment theories, including the Capital Asset Pricing Model (CAPM), to evaluate the company's investment potential. Provide detailed calculations and insights.
 
     Balance Sheet:
     - Reporting Date: ${balance_sheet.stac_yymm}
@@ -96,11 +96,16 @@ export class GptService {
     - Operating Profit Growth Rate: ${growth_ratios.bsop_prfi_inrt}
     - Equity Growth Rate: ${growth_ratios.equt_inrt}
     - Total Assets Growth Rate: ${growth_ratios.totl_aset_inrt}
+
+    Use the following parameters for CAPM calculation:
+    - Risk-Free Rate: 4.5%
+    - Market Return: 8%
+    - Beta: 1.2
     
-    Provide a comprehensive analysis of this data, including insights on the company's financial health, performance trends, and investment potential. Highlight any areas of concern or notable strengths.
+    Provide a comprehensive analysis of this data, including insights on the company's financial health, performance trends, and investment potential. Highlight any areas of concern or notable strengths. Provide detailed calculations using the CAPM model and other relevant financial theories.
 
     Show me the financial report in "Korean".
-    `;
+`;
 
     const completion = await this.openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
