@@ -24,13 +24,10 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd analyst-nest
-            echo "Running git pull"
+            sudo git stash
             sudo git pull
-            echo "Running npm install"
+            sudo git stash pop
             sudo npm install
-            echo "Running npm run build"
             sudo npm run build
-            echo "Checking PM2 list"
             sudo pm2 list
-            echo "Restarting pm2"
             sudo pm2 reload analyst --update-env
