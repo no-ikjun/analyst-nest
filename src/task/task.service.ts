@@ -57,10 +57,7 @@ export class TaskService {
       }
       for (const messageUrl of messageUrlList) {
         await axios.post(messageUrl.url, {
-          text: {
-            type: 'mrkdwn',
-            text: `*[국내주식]*\n${user.email}님의 관심 종목 주가 알림`,
-          },
+          text: `*[국내주식]*\n${user.email}님의 관심 종목 주가 알림`,
           username: 'AI Analyst',
           attachments: attachments,
         });
@@ -110,10 +107,7 @@ export class TaskService {
       }
       for (const messageUrl of messageUrlList) {
         await axios.post(messageUrl.url, {
-          text: {
-            type: 'mrkdwn',
-            text: `*[해외주식]*\n${user.email}님의 관심 종목 주가 알림`,
-          },
+          text: `*[해외주식]*\n${user.email}님의 관심 종목 주가 알림`,
           username: 'AI Analyst',
           attachments: attachments,
         });
