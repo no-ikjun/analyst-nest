@@ -10,12 +10,13 @@ import { UserService } from 'src/user/user.service';
 import { UserRepository } from 'src/user/user.repository';
 import { MessageService } from 'src/message/message.service';
 import { Message } from 'src/global/entities/message.entity';
+import { ForeignInterest } from 'src/global/entities/foreignInterest.entity';
 
 @Module({
   imports: [
     KisModule,
     HttpModule,
-    TypeOrmModule.forFeature([KisToken, Interest, Message]),
+    TypeOrmModule.forFeature([KisToken, Interest, Message, ForeignInterest]),
   ],
   providers: [
     TaskService,

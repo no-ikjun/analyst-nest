@@ -14,6 +14,7 @@ import { FinancialRatioType } from './types/financialRatio.type';
 import { ProfitRatioType } from './types/profitRatio.type';
 import { GrowthRatioType } from './types/growthRatio.type';
 import { RealTimePriceType } from './types/realtimePrice.type';
+import { ForeignInterest } from 'src/global/entities/foreignInterest.entity';
 
 @Injectable()
 export class KisService {
@@ -22,6 +23,8 @@ export class KisService {
     private readonly kisTokenRepository: Repository<KisToken>,
     @InjectRepository(Interest)
     private readonly interestRepository: Repository<Interest>,
+    @InjectRepository(ForeignInterest)
+    private readonly foreignInterestRepository: Repository<ForeignInterest>,
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
@@ -108,6 +111,34 @@ export class KisService {
     }
   }
 
+  async getKisForeignStockInfo(stockCode: string) {
+    const kisToken = await this.getKisToken();
+    try {
+      const response = await firstValueFrom(
+        this.httpService.get(
+          `${this.baseUrl}/uapi/overseas-price/v1/quotations/search-info?PDNO=${stockCode}&PRDT_TYPE_CD=512`,
+          {
+            headers: {
+              Authorization: `Bearer ${kisToken.access_token}`,
+              appkey: this.configService.get('KIS_APP_KEY'),
+              appsecret: this.configService.get('KIS_APP_SECRET'),
+              custtype: 'P',
+              'Content-Type': 'application/json',
+              tr_id: 'CTPF1702R',
+            },
+          },
+        ),
+      );
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(
+        'KIS Forien Stock Info request failed',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
   async addInterest(stockCode: string, accessToken: string): Promise<Interest> {
     const existingInterest = await this.getInterestByCode(
       stockCode,
@@ -132,9 +163,42 @@ export class KisService {
     return interest;
   }
 
+  async addForeignInterest(
+    stockCode: string,
+    accessToken: string,
+  ): Promise<ForeignInterest> {
+    const existingInterest = await this.getForeignInterestByCode(
+      stockCode,
+      accessToken,
+    );
+    if (existingInterest) {
+      throw new HttpException('Already added', HttpStatus.BAD_REQUEST);
+    }
+    const stockInfo = await this.getKisForeignStockInfo(stockCode);
+    const userId = this.jwtService.decode(accessToken).id;
+    const interest = this.foreignInterestRepository.create({
+      code: stockCode,
+      prdt_name: stockInfo.output.prdt_name,
+      prdt_eng_name: stockInfo.output.prdt_eng_name,
+      user: { id: userId },
+      created_at: new Date(),
+    });
+    await this.foreignInterestRepository.save(interest);
+    return interest;
+  }
+
   async getInterestList(accessToken: string): Promise<Interest[]> {
     const userId = this.jwtService.decode(accessToken).id;
     return await this.interestRepository.find({
+      where: { user: { id: userId } },
+    });
+  }
+
+  async getForeignInterestList(
+    accessToken: string,
+  ): Promise<ForeignInterest[]> {
+    const userId = this.jwtService.decode(accessToken).id;
+    return await this.foreignInterestRepository.find({
       where: { user: { id: userId } },
     });
   }
@@ -155,12 +219,34 @@ export class KisService {
     });
   }
 
+  async getForeignInterestByCode(
+    stockCode: string,
+    accessToken: string,
+  ): Promise<ForeignInterest> {
+    const userId = this.jwtService.decode(accessToken).id;
+    return await this.foreignInterestRepository.findOne({
+      where: { user: { id: userId }, code: stockCode },
+    });
+  }
+
   async deleteInterest(stockCode: string, accessToken: string) {
     const interest = await this.getInterestByCode(stockCode, accessToken);
     if (!interest) {
       throw new HttpException('Not found', HttpStatus.BAD_REQUEST);
     }
     await this.interestRepository.delete(interest);
+    return interest;
+  }
+
+  async deleteForeignInterest(stockCode: string, accessToken: string) {
+    const interest = await this.getForeignInterestByCode(
+      stockCode,
+      accessToken,
+    );
+    if (!interest) {
+      throw new HttpException('Not Found', HttpStatus.BAD_REQUEST);
+    }
+    await this.foreignInterestRepository.delete(interest);
     return interest;
   }
 
