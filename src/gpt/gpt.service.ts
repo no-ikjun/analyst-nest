@@ -27,91 +27,101 @@ export class GptService {
   }
 
   async generateFinancialReport(
-    interestStock: Interest,
-    balance_sheet: BalanceSheetType,
-    income_statement: OperatingProfitType,
-    financial_ratios: FinancialRatioType,
-    profitability_ratios: ProfitRatioType,
-    stability_ratios: StabilityRatioType,
-    growth_ratios: GrowthRatioType,
+    interestStocks: Interest[],
+    balanceSheets: BalanceSheetType[],
+    incomeStatements: OperatingProfitType[],
+    financialRatios: FinancialRatioType[],
+    profitabilityRatios: ProfitRatioType[],
+    stabilityRatios: StabilityRatioType[],
+    growthRatios: GrowthRatioType[],
   ) {
-    const prompt = `
-    Create a comprehensive financial report based on the following data. The report should include an analysis of the balance sheet, income statement, financial ratios, profitability ratios, stability ratios, and growth ratios. For each section, provide insights on the company's financial health, performance, and potential investment value. Summarize key findings and provide actionable investment advice. Use investment theories, including the Capital Asset Pricing Model (CAPM), to evaluate the company's investment potential. Provide detailed calculations and insights.
-
-    Balance Sheet:
-    - Reporting Date: ${balance_sheet.stac_yymm}
-    - Current Assets: ${balance_sheet.cras}
-    - Fixed Assets: ${balance_sheet.fxas}
-    - Total Assets: ${balance_sheet.total_aset}
-    - Current Liabilities: ${balance_sheet.flow_lblt}
-    - Fixed Liabilities: ${balance_sheet.fix_lblt}
-    - Total Liabilities: ${balance_sheet.total_lblt}
-    - Capital: ${balance_sheet.cpfn}
-    - Capital Surplus: ${balance_sheet.cfp_surp}
-    - Retained Earnings: ${balance_sheet.prfi_surp}
-    - Total Equity: ${balance_sheet.total_cptl}
-    
-    Income Statement:
-    - Reporting Date: ${income_statement.stac_yymm}
-    - Sales: ${income_statement.sale_account}
-    - Cost of Sales: ${income_statement.sale_cost}
-    - Gross Profit: ${income_statement.sale_totl_prfi}
-    - Depreciation: ${income_statement.depr_cost}
-    - SG&A Expenses: ${income_statement.sell_mang}
-    - Operating Profit: ${income_statement.bsop_prti}
-    - Non-operating Income: ${income_statement.bsop_non_ernn}
-    - Non-operating Expenses: ${income_statement.bsop_non_expn}
-    - Ordinary Profit: ${income_statement.op_prfi}
-    - Extraordinary Income: ${income_statement.spec_prfi}
-    - Extraordinary Loss: ${income_statement.spec_loss}
-    - Net Income: ${income_statement.thtr_ntin}
-    
-    Financial Ratios:
-    - Reporting Date: ${financial_ratios.stac_yymm}
-    - Sales Growth Rate: ${financial_ratios.grs}
-    - Operating Profit Growth Rate: ${financial_ratios.bsop_prfi_inrt}
-    - Net Income Growth Rate: ${financial_ratios.ntin_inrt}
-    - ROE: ${financial_ratios.roe_val}
-    - EPS: ${financial_ratios.eps}
-    - Sales per Share: ${financial_ratios.sps}
-    - BPS: ${financial_ratios.bps}
-    - Retention Ratio: ${financial_ratios.rsrv_rate}
-    - Debt Ratio: ${financial_ratios.lblt_rate}
-    
-    Profitability Ratios:
-    - Reporting Date: ${profitability_ratios.stac_yymm}
-    - Return on Total Assets: ${profitability_ratios.cptl_ntin_rate}
-    - Return on Equity: ${profitability_ratios.self_cptl_ntin_inrt}
-    - Net Profit Margin: ${profitability_ratios.sale_ntin_rate}
-    - Gross Profit Margin: ${profitability_ratios.sale_totl_rate}
-    
-    Stability Ratios:
-    - Reporting Date: ${stability_ratios.stac_yymm}
-    - Debt Ratio: ${stability_ratios.lblt_rate}
-    - Dependency on Borrowings: ${stability_ratios.bram_depn}
-    - Current Ratio: ${stability_ratios.crnt_rate}
-    - Quick Ratio: ${stability_ratios.quck_rate}
-    
-    Growth Ratios:
-    - Reporting Date: ${growth_ratios.stac_yymm}
-    - Sales Growth Rate: ${growth_ratios.grs}
-    - Operating Profit Growth Rate: ${growth_ratios.bsop_prfi_inrt}
-    - Equity Growth Rate: ${growth_ratios.equt_inrt}
-    - Total Assets Growth Rate: ${growth_ratios.totl_aset_inrt}
+    let prompt = `
+    Create a comprehensive financial report based on the following data for multiple stocks. The report should include an analysis of the balance sheet, income statement, financial ratios, profitability ratios, stability ratios, and growth ratios for each stock. For each section, provide insights on the company's financial health, performance, and potential investment value. Summarize key findings and provide actionable investment advice. Finally, calculate the optimal portfolio weights for these stocks using the Mean-Variance Optimization (Markowitz Portfolio Theory). Provide detailed calculations and insights.
 
     Use the following parameters for CAPM calculation:
     - Risk-Free Rate: 4.5%
     - Market Return: 8%
     - Beta: 1.2
-    
-    Provide a comprehensive analysis of this data, including insights on the company's financial health, performance trends, and investment potential. Highlight any areas of concern or notable strengths. Provide detailed calculations using the CAPM model and other relevant financial theories.
 
-    Show me the financial report in "Korean".
-`;
+    Provide the comprehensive analysis in "Korean".
+    `;
+
+    for (let i = 0; i < interestStocks.length; i++) {
+      prompt += `
+      종목 ${i + 1}: ${interestStocks[i].code} - ${
+        interestStocks[i].prdt_abrv_name
+      }
+      Balance Sheet:
+      - Reporting Date: ${balanceSheets[i].stac_yymm}
+      - Current Assets: ${balanceSheets[i].cras}
+      - Fixed Assets: ${balanceSheets[i].fxas}
+      - Total Assets: ${balanceSheets[i].total_aset}
+      - Current Liabilities: ${balanceSheets[i].flow_lblt}
+      - Fixed Liabilities: ${balanceSheets[i].fix_lblt}
+      - Total Liabilities: ${balanceSheets[i].total_lblt}
+      - Capital: ${balanceSheets[i].cpfn}
+      - Capital Surplus: ${balanceSheets[i].cfp_surp}
+      - Retained Earnings: ${balanceSheets[i].prfi_surp}
+      - Total Equity: ${balanceSheets[i].total_cptl}
+      
+      Income Statement:
+      - Reporting Date: ${incomeStatements[i].stac_yymm}
+      - Sales: ${incomeStatements[i].sale_account}
+      - Cost of Sales: ${incomeStatements[i].sale_cost}
+      - Gross Profit: ${incomeStatements[i].sale_totl_prfi}
+      - Depreciation: ${incomeStatements[i].depr_cost}
+      - SG&A Expenses: ${incomeStatements[i].sell_mang}
+      - Operating Profit: ${incomeStatements[i].bsop_prti}
+      - Non-operating Income: ${incomeStatements[i].bsop_non_ernn}
+      - Non-operating Expenses: ${incomeStatements[i].bsop_non_expn}
+      - Ordinary Profit: ${incomeStatements[i].op_prfi}
+      - Extraordinary Income: ${incomeStatements[i].spec_prfi}
+      - Extraordinary Loss: ${incomeStatements[i].spec_loss}
+      - Net Income: ${incomeStatements[i].thtr_ntin}
+      
+      Financial Ratios:
+      - Reporting Date: ${financialRatios[i].stac_yymm}
+      - Sales Growth Rate: ${financialRatios[i].grs}
+      - Operating Profit Growth Rate: ${financialRatios[i].bsop_prfi_inrt}
+      - Net Income Growth Rate: ${financialRatios[i].ntin_inrt}
+      - ROE: ${financialRatios[i].roe_val}
+      - EPS: ${financialRatios[i].eps}
+      - Sales per Share: ${financialRatios[i].sps}
+      - BPS: ${financialRatios[i].bps}
+      - Retention Ratio: ${financialRatios[i].rsrv_rate}
+      - Debt Ratio: ${financialRatios[i].lblt_rate}
+      
+      Profitability Ratios:
+      - Reporting Date: ${profitabilityRatios[i].stac_yymm}
+      - Return on Total Assets: ${profitabilityRatios[i].cptl_ntin_rate}
+      - Return on Equity: ${profitabilityRatios[i].self_cptl_ntin_inrt}
+      - Net Profit Margin: ${profitabilityRatios[i].sale_ntin_rate}
+      - Gross Profit Margin: ${profitabilityRatios[i].sale_totl_rate}
+      
+      Stability Ratios:
+      - Reporting Date: ${stabilityRatios[i].stac_yymm}
+      - Debt Ratio: ${stabilityRatios[i].lblt_rate}
+      - Dependency on Borrowings: ${stabilityRatios[i].bram_depn}
+      - Current Ratio: ${stabilityRatios[i].crnt_rate}
+      - Quick Ratio: ${stabilityRatios[i].quck_rate}
+      
+      Growth Ratios:
+      - Reporting Date: ${growthRatios[i].stac_yymm}
+      - Sales Growth Rate: ${growthRatios[i].grs}
+      - Operating Profit Growth Rate: ${growthRatios[i].bsop_prfi_inrt}
+      - Equity Growth Rate: ${growthRatios[i].equt_inrt}
+      - Total Assets Growth Rate: ${growthRatios[i].totl_aset_inrt}
+      `;
+    }
+
+    prompt += `
+    Finally, calculate the optimal portfolio weights for these stocks using the Mean-Variance Optimization (Markowitz Portfolio Theory). Provide detailed calculations and insights. Highlight any areas of concern or notable strengths.
+    `;
 
     const completion = await this.openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [{ role: 'system', content: prompt }],
+      max_tokens: 1500,
     });
 
     return completion;
