@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Interest } from './interest.entity';
 import { Message } from './message.entity';
+import { ForeignInterest } from './foreignInterest.entity';
 
 @Entity('user')
 export class User {
@@ -24,6 +25,9 @@ export class User {
 
   @OneToMany(() => Interest, (interest) => interest.user)
   interests: Interest[];
+
+  @OneToMany(() => ForeignInterest, (foreignInterest) => foreignInterest.user)
+  foreignInterests: ForeignInterest[];
 
   @Column({ default: 1 })
   preference: number;

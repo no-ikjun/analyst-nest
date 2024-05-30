@@ -5,9 +5,13 @@ import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { KisToken } from 'src/global/entities/kistoken.entity';
 import { Interest } from 'src/global/entities/interest.entity';
+import { ForeignInterest } from 'src/global/entities/foreignInterest.entity';
 
 @Module({
-  imports: [HttpModule, TypeOrmModule.forFeature([KisToken, Interest])],
+  imports: [
+    HttpModule,
+    TypeOrmModule.forFeature([KisToken, Interest, ForeignInterest]),
+  ],
   controllers: [KisController],
   providers: [KisService],
 })
