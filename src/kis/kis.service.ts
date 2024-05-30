@@ -13,7 +13,10 @@ import { OperatingProfitType } from './types/operatingProfit.type';
 import { FinancialRatioType } from './types/financialRatio.type';
 import { ProfitRatioType } from './types/profitRatio.type';
 import { GrowthRatioType } from './types/growthRatio.type';
-import { RealTimePriceType } from './types/realtimePrice.type';
+import {
+  ForeignRealTimePriceType,
+  RealTimePriceType,
+} from './types/realtimePrice.type';
 import { ForeignInterest } from 'src/global/entities/foreignInterest.entity';
 
 @Injectable()
@@ -32,6 +35,7 @@ export class KisService {
 
   private baseUrl = 'https://openapi.koreainvestment.com:9443';
 
+  ///KIS 토큰 발급
   async getKisToken(): Promise<KisTokenResponseType> {
     const existingToken = await this.kisTokenRepository.findOne({
       where: { access_token_token_expired: MoreThan(new Date()) },
@@ -46,7 +50,6 @@ export class KisService {
           existingToken.access_token_token_expired.toString(),
       };
     }
-
     const kisAppKey = this.configService.get('KIS_APP_KEY');
     const kisAppSecret = this.configService.get('KIS_APP_SECRET');
     try {
@@ -63,16 +66,13 @@ export class KisService {
       tokenExpirationDate.setSeconds(
         tokenExpirationDate.getSeconds() + tokenResponse.expires_in,
       );
-
       const newToken = this.kisTokenRepository.create({
         access_token: Buffer.from(tokenResponse.access_token),
         token_type: tokenResponse.token_type,
         expires_in: tokenResponse.expires_in,
         access_token_token_expired: tokenExpirationDate,
       });
-
       await this.kisTokenRepository.save(newToken);
-
       return tokenResponse;
     } catch (error) {
       console.error(error);
@@ -83,6 +83,7 @@ export class KisService {
     }
   }
 
+  ///[국내주식] 주식 기본 정보
   async getKisStockInfo(stockCode: string) {
     const kisToken = await this.getKisToken();
     try {
@@ -111,6 +112,7 @@ export class KisService {
     }
   }
 
+  ///[해외주식] 주식 기본 정보
   async getKisForeignStockInfo(stockCode: string) {
     const kisToken = await this.getKisToken();
     try {
@@ -139,6 +141,7 @@ export class KisService {
     }
   }
 
+  ///[국내주식] 관심종목 추가
   async addInterest(stockCode: string, accessToken: string): Promise<Interest> {
     const existingInterest = await this.getInterestByCode(
       stockCode,
@@ -163,6 +166,7 @@ export class KisService {
     return interest;
   }
 
+  ///[해외주식] 관심 종목 추가
   async addForeignInterest(
     stockCode: string,
     accessToken: string,
@@ -187,6 +191,7 @@ export class KisService {
     return interest;
   }
 
+  ///[국내주식] 나의 관심종목 조회 (토큰)
   async getInterestList(accessToken: string): Promise<Interest[]> {
     const userId = this.jwtService.decode(accessToken).id;
     return await this.interestRepository.find({
@@ -194,6 +199,7 @@ export class KisService {
     });
   }
 
+  ///[해외주식] 나의 관심종목 조회 (토큰)
   async getForeignInterestList(
     accessToken: string,
   ): Promise<ForeignInterest[]> {
@@ -203,12 +209,23 @@ export class KisService {
     });
   }
 
+  ///[국내주식] 나의 관심종목 조회 (아이디)
   async getInterestListByUserId(userId: number): Promise<Interest[]> {
     return await this.interestRepository.find({
       where: { user: { id: userId } },
     });
   }
 
+  ///[해외주식] 나의 관심종목 조회 (아이디)
+  async getForeignInterestListByUserId(
+    userId: number,
+  ): Promise<ForeignInterest[]> {
+    return await this.foreignInterestRepository.find({
+      where: { user: { id: userId } },
+    });
+  }
+
+  ///[국내주식] 특정 종목 정보 조회
   async getInterestByCode(
     stockCode: string,
     accessToken: string,
@@ -219,6 +236,7 @@ export class KisService {
     });
   }
 
+  ///[해외주식] 특정 종목 정보 조회
   async getForeignInterestByCode(
     stockCode: string,
     accessToken: string,
@@ -229,6 +247,7 @@ export class KisService {
     });
   }
 
+  ///[국내주식] 관심종목 삭제
   async deleteInterest(stockCode: string, accessToken: string) {
     const interest = await this.getInterestByCode(stockCode, accessToken);
     if (!interest) {
@@ -238,6 +257,7 @@ export class KisService {
     return interest;
   }
 
+  ///[해외주식] 관심종목 삭제
   async deleteForeignInterest(stockCode: string, accessToken: string) {
     const interest = await this.getForeignInterestByCode(
       stockCode,
@@ -250,7 +270,7 @@ export class KisService {
     return interest;
   }
 
-  ///대차대조표 조회
+  ///[국내주식] 대차대조표 조회
   async getBalanceSheet(stockCode: string): Promise<BalanceSheetType[]> {
     const kisToken = await this.getKisToken();
     try {
@@ -282,7 +302,7 @@ export class KisService {
     }
   }
 
-  ///손익계산서 조회
+  ///[국내주식] 손익계산서 조회
   async getOperatingProfit(stockCode: string): Promise<OperatingProfitType[]> {
     const kisToken = await this.getKisToken();
     try {
@@ -314,7 +334,7 @@ export class KisService {
     }
   }
 
-  //재무비율 조회
+  //[국내주식] 재무비율 조회
   async getFinancialRatio(stockCode: string): Promise<FinancialRatioType[]> {
     const kisToken = await this.getKisToken();
     try {
@@ -346,7 +366,7 @@ export class KisService {
     }
   }
 
-  ///수익성비율 조회
+  ///[국내주식] 수익성비율 조회
   async getProfitRatio(stockCode: string): Promise<ProfitRatioType[]> {
     const kisToken = await this.getKisToken();
     try {
@@ -378,7 +398,7 @@ export class KisService {
     }
   }
 
-  ///안정성 비율 조회
+  ///[국내주식] 안정성 비율 조회
   async getStabilityRatio(stockCode: string) {
     const kisToken = await this.getKisToken();
     try {
@@ -410,7 +430,7 @@ export class KisService {
     }
   }
 
-  ///성장성 비율 조회
+  ///[국내주식] 성장성 비율 조회
   async getGrowthRatio(stockCode: string): Promise<GrowthRatioType[]> {
     const kisToken = await this.getKisToken();
     try {
@@ -442,7 +462,7 @@ export class KisService {
     }
   }
 
-  ///실시간 주가 조회
+  ///[국내주식] 실시간 주가 조회
   async getRealTimeStockPrice(stockCode: string): Promise<RealTimePriceType> {
     const kisToken = await this.getKisToken();
     try {
@@ -465,6 +485,42 @@ export class KisService {
         stck_prpr: response.data.output.stck_prpr,
         prdy_vrss: response.data.output.prdy_vrss,
         prdy_ctrt: response.data.output.prdy_ctrt,
+      };
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(
+        'KIS Stock Info request failed',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  ///[해외주식] 실시간 주가 조회
+  async getRealTimeForeignStockPrice(
+    stockCode: string,
+  ): Promise<ForeignRealTimePriceType> {
+    const kisToken = await this.getKisToken();
+    try {
+      const response = await firstValueFrom(
+        this.httpService.get(
+          `${this.baseUrl}/uapi/overseas-price/v1/quotations/price-detail?SYMB=${stockCode}&AUTH=&EXCD=NAS`,
+          {
+            headers: {
+              Authorization: `Bearer ${kisToken.access_token}`,
+              appkey: this.configService.get('KIS_APP_KEY'),
+              appsecret: this.configService.get('KIS_APP_SECRET'),
+              custtype: 'P',
+              'Content-Type': 'application/json',
+              tr_id: 'HHDFS76200200',
+            },
+          },
+        ),
+      );
+      return {
+        last: response.data.output.last,
+        t_xprc: response.data.output.t_xprc,
+        p_xdif: response.data.output.p_xdif,
+        t_xrat: response.data.output.t_xrat,
       };
     } catch (error) {
       console.error(error);

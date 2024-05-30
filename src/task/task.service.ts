@@ -64,6 +64,57 @@ export class TaskService {
     }
   }
 
+  async sendRealTimeForeignStockPrice() {
+    const users = await this.userService.getAllUsers();
+    const attachments = [];
+    for (const user of users) {
+      const interestList = await this.kisService.getForeignInterestListByUserId(
+        user.id,
+      );
+      const messageUrlList = await this.messageService.findMessageByUserId(
+        user.id,
+      );
+      for (const interestStock of interestList) {
+        const stockPrice = await this.kisService.getRealTimeForeignStockPrice(
+          interestStock.code,
+        );
+        attachments.push({
+          color: Number(stockPrice.t_xrat) >= 0 ? '#2eb886' : '#ff0000',
+          fields: [
+            {
+              title: '종목',
+              value: interestStock.prdt_name,
+              short: false,
+            },
+            {
+              title: '현재가',
+              value: Number(stockPrice.t_xprc).toLocaleString() + '원',
+              short: false,
+            },
+            {
+              title: '전일대비',
+              value:
+                Number(stockPrice.p_xdif).toLocaleString() +
+                '원' +
+                ' (' +
+                stockPrice.t_xrat +
+                '%)',
+              short: false,
+            },
+          ],
+        });
+      }
+      for (const messageUrl of messageUrlList) {
+        await axios.post(messageUrl.url, {
+          text: `${user.email}님의 관심 종목 주가 알림 [국내주식]`,
+          username: 'AI Analyst',
+          icon_emoji: ':robot_face:',
+          attachments: attachments,
+        });
+      }
+    }
+  }
+
   // 매일 오전 10시에 실행
   @Cron('0 0 10 * * *', {
     timeZone: 'Asia/Seoul',
@@ -78,5 +129,13 @@ export class TaskService {
   })
   handleCronAtEndOfMarket() {
     this.sendRealTimeStockPrice();
+  }
+
+  // 매일 오후 11시 30분에 실행
+  @Cron('0 20 21 * * *', {
+    timeZone: 'Asia/Seoul',
+  })
+  async handleCronAtStartOfAmericanMarket() {
+    this.sendRealTimeForeignStockPrice();
   }
 }
