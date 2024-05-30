@@ -12,11 +12,8 @@ export class TaskService {
     private readonly userService: UserService,
     private readonly messageService: MessageService,
   ) {}
-  // 매일 오전 10시에 실행
-  @Cron('0 50 14 * * *', {
-    timeZone: 'Asia/Seoul',
-  })
-  async handleCronAtNoon() {
+
+  async sendRealTimeStockPrice() {
     const users = await this.userService.getAllUsers();
     const attachments = [];
     for (const user of users) {
@@ -58,7 +55,7 @@ export class TaskService {
       }
       for (const messageUrl of messageUrlList) {
         await axios.post(messageUrl.url, {
-          text: '관심 종목 주가 알림',
+          text: `${user.email}님의 관심 종목 주가 알림 [국내주식]`,
           username: 'AI Analyst',
           icon_emoji: ':robot_face:',
           attachments: attachments,
@@ -67,12 +64,19 @@ export class TaskService {
     }
   }
 
+  // 매일 오전 10시에 실행
+  @Cron('0 0 10 * * *', {
+    timeZone: 'Asia/Seoul',
+  })
+  async handleCronAtStartOfMarket() {
+    this.sendRealTimeStockPrice();
+  }
+
   // 매일 오후 3시에 실행
   @Cron('0 0 15 * * *', {
     timeZone: 'Asia/Seoul',
   })
-  handleCronAtOnePM() {
-    console.log('매일 낮 1시에 실행되는 작업');
-    // 여기에 원하는 작업을 추가하세요
+  handleCronAtEndOfMarket() {
+    this.sendRealTimeStockPrice();
   }
 }
