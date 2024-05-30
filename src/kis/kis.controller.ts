@@ -47,4 +47,10 @@ export class KisController {
     const accessToken = req.headers.authorization.split(' ')[1];
     return this.kisService.deleteInterest(code, accessToken);
   }
+
+  @UseGuards(AuthGuard)
+  @Get('realtime-price')
+  async getBalanceSheet(@Query('code') code: string) {
+    return this.kisService.getRealTimeStockPrice(code);
+  }
 }
