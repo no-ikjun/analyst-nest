@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
+import { Interest } from 'src/global/entities/interest.entity';
 import { BalanceSheetType } from 'src/kis/types/balanceSheet.type';
 import { FinancialRatioType } from 'src/kis/types/financialRatio.type';
 import { GrowthRatioType } from 'src/kis/types/growthRatio.type';
@@ -26,6 +27,7 @@ export class GptService {
   }
 
   async generateFinancialReport(
+    interestStock: Interest,
     balance_sheet: BalanceSheetType,
     income_statement: OperatingProfitType,
     financial_ratios: FinancialRatioType,
