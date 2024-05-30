@@ -1,15 +1,14 @@
-import { Body, Controller, Get, UseGuards } from '@nestjs/common';
-import { GptService } from './gpt.service';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { GptDto } from './dto/gpt.dto';
+import { TaskService } from 'src/task/task.service';
 
 @Controller('gpt')
 export class GptController {
-  constructor(private readonly gptService: GptService) {}
+  constructor(private readonly taskService: TaskService) {}
 
   @UseGuards(AuthGuard)
   @Get()
-  async testGpt(@Body() data: GptDto) {
-    return this.gptService.testGpt(data.text);
+  async testGpt() {
+    return this.taskService.generateReport();
   }
 }

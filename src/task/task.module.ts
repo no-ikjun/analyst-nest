@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { KisService } from 'src/kis/kis.service';
-import { KisModule } from 'src/kis/kis.module';
 import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { KisToken } from 'src/global/entities/kistoken.entity';
@@ -15,7 +14,6 @@ import { GptService } from 'src/gpt/gpt.service';
 
 @Module({
   imports: [
-    KisModule,
     HttpModule,
     TypeOrmModule.forFeature([KisToken, Interest, Message, ForeignInterest]),
   ],
