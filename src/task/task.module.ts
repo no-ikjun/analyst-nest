@@ -11,6 +11,7 @@ import { UserRepository } from 'src/user/user.repository';
 import { MessageService } from 'src/message/message.service';
 import { Message } from 'src/global/entities/message.entity';
 import { ForeignInterest } from 'src/global/entities/foreignInterest.entity';
+import { GptService } from 'src/gpt/gpt.service';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ForeignInterest } from 'src/global/entities/foreignInterest.entity';
     UserService,
     UserRepository,
     MessageService,
+    GptService,
   ],
 })
 export class TaskModule {}
