@@ -209,9 +209,9 @@ export class TaskService {
     this.sendRealTimeForeignStockPrice();
   }
 
-  // 매일 오전 2시에 실행
+  // 매일 오전 2시 30분에 실행
   // 미국장 중간 점검
-  @Cron('0 10 2 * * *', {
+  @Cron('0 30 2 * * *', {
     timeZone: 'Asia/Seoul',
   })
   async handleCronAtMiddleOfAmericanMarket() {
@@ -227,7 +227,7 @@ export class TaskService {
     this.sendRealTimeForeignStockPrice();
   }
 
-  @Cron('0 12 2 * * *', {
+  @Cron('0 32 2 * * *', {
     timeZone: 'Asia/Seoul',
   })
   async sendFinancialReport() {
