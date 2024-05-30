@@ -211,6 +211,6 @@ export class TaskService {
     timeZone: 'Asia/Seoul',
   })
   async sendFinancialReport() {
-    this.sendRealTimeForeignStockPrice();
+    this.generateReport();
   }
 }
