@@ -10,8 +10,8 @@ export class AppController {
     return 'pong';
   }
 
-  @Get('stock')
-  async fetchApiData(@Query('query') query: string) {
-    return this.appService.fetchApiData(query);
-  }
+  // @Get('stock')
+  // async fetchApiData(@Query('query') query: string) {
+  //   return this.appService.fetchApiData(query);
+  // }
 }
