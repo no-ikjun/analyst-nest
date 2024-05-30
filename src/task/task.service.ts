@@ -56,7 +56,7 @@ export class TaskService {
       }
       for (const messageUrl of messageUrlList) {
         await axios.post(messageUrl.url, {
-          text: `${user.email}님의 관심 종목 주가 알림 [국내주식]`,
+          text: `[국내주식] ${user.email}님의 관심 종목 주가 알림`,
           username: 'AI Analyst',
           icon_emoji: ':robot_face:',
           attachments: attachments,
@@ -107,8 +107,7 @@ export class TaskService {
       }
       for (const messageUrl of messageUrlList) {
         await axios.post(messageUrl.url, {
-          title: '해외주식 주가 알림',
-          text: `${user.email}님의 관심 종목 주가 알림 [해외주식]`,
+          text: `[해외주식] ${user.email}님의 관심 종목 주가 알림`,
           username: 'AI Analyst',
           icon_emoji: ':robot_face:',
           attachments: attachments,
@@ -138,6 +137,14 @@ export class TaskService {
     timeZone: 'Asia/Seoul',
   })
   async handleCronAtStartOfAmericanMarket() {
+    this.sendRealTimeForeignStockPrice();
+  }
+
+  // 매일 오전 6시에 실행
+  @Cron('0 0 6 * * *', {
+    timeZone: 'Asia/Seoul',
+  })
+  async handleCronAtEndOfAmericanMarket() {
     this.sendRealTimeForeignStockPrice();
   }
 }
