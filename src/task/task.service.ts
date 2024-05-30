@@ -225,10 +225,10 @@ export class TaskService {
     this.sendRealTimeForeignStockPrice();
   }
 
-  @Cron('0 55 3 * * *', {
+  @Cron('0 0 8 * * 1-5', {
     timeZone: 'Asia/Seoul',
   })
-  async sendFinancialReport() {
+  handleCron() {
     this.generateReport();
   }
 }
