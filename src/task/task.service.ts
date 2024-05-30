@@ -57,10 +57,7 @@ export class TaskService {
       }
       for (const messageUrl of messageUrlList) {
         await axios.post(messageUrl.url, {
-          text: {
-            type: 'mrkdwn',
-            text: `*[국내주식]*\n${user.email}님의 관심 종목 주가 알림`,
-          },
+          text: `*[국내주식]*\n${user.email}님의 관심 종목 주가 알림`,
           username: 'AI Analyst',
           attachments: attachments,
         });
@@ -110,10 +107,7 @@ export class TaskService {
       }
       for (const messageUrl of messageUrlList) {
         await axios.post(messageUrl.url, {
-          text: {
-            type: 'mrkdwn',
-            text: `*[해외주식]*\n${user.email}님의 관심 종목 주가 알림`,
-          },
+          text: `*[해외주식]*\n${user.email}님의 관심 종목 주가 알림`,
           username: 'AI Analyst',
           attachments: attachments,
         });
@@ -127,6 +121,12 @@ export class TaskService {
       const interestList = await this.kisService.getInterestListByUserId(
         user.id,
       );
+      const balanceSheets = [];
+      const incomeStatements = [];
+      const financialRatios = [];
+      const profitRatios = [];
+      const stabilityRatios = [];
+      const growthRatios = [];
       for (const interest of interestList) {
         const balanceSheet = await this.kisService.getBalanceSheet(
           interest.code,
@@ -142,37 +142,42 @@ export class TaskService {
           interest.code,
         );
         const growthRatio = await this.kisService.getGrowthRatio(interest.code);
-        const report = await this.gptService.generateFinancialReport(
-          interest,
-          balanceSheet[0],
-          incomeStatement[0],
-          financialRatio[0],
-          profitRatio[0],
-          stabilityRatio[0],
-          growthRatio[0],
-        );
-        const messageUrlList = await this.messageService.findMessageByUserId(
-          user.id,
-        );
-        for (const messageUrl of messageUrlList) {
-          await axios.post(messageUrl.url, {
-            text: `[리포트] ${user.email}님의 관심 종목 ${interest.prdt_abrv_name} 리포트`,
-            username: 'AI Analyst',
-            icon_emoji: ':robot_face:',
-            attachments: [
-              {
-                color: '#2eb886',
-                fields: [
-                  {
-                    title: '리포트',
-                    value: report,
-                    short: false,
-                  },
-                ],
-              },
-            ],
-          });
-        }
+        balanceSheets.push(balanceSheet);
+        incomeStatements.push(incomeStatement);
+        financialRatios.push(financialRatio);
+        profitRatios.push(profitRatio);
+        stabilityRatios.push(stabilityRatio);
+        growthRatios.push(growthRatio);
+      }
+      const report = await this.gptService.generateFinancialReport(
+        interestList,
+        balanceSheets,
+        incomeStatements,
+        financialRatios,
+        profitRatios,
+        stabilityRatios,
+        growthRatios,
+      );
+      const messageUrlList = await this.messageService.findMessageByUserId(
+        user.id,
+      );
+      for (const messageUrl of messageUrlList) {
+        await axios.post(messageUrl.url, {
+          text: `*[리포트]* ${user.email}님의 관심 종목 리포트`,
+          username: 'AI Analyst',
+          attachments: [
+            {
+              fields: [
+                {
+                  title: '리포트',
+                  type: 'mrkdwn',
+                  value: report.choices[0].message.content,
+                  short: false,
+                },
+              ],
+            },
+          ],
+        });
       }
     }
   }
@@ -204,9 +209,9 @@ export class TaskService {
     this.sendRealTimeForeignStockPrice();
   }
 
-  // 매일 오전 2시에 실행
+  // 매일 오전 2시 30분에 실행
   // 미국장 중간 점검
-  @Cron('0 10 2 * * *', {
+  @Cron('0 30 2 * * *', {
     timeZone: 'Asia/Seoul',
   })
   async handleCronAtMiddleOfAmericanMarket() {
@@ -222,7 +227,7 @@ export class TaskService {
     this.sendRealTimeForeignStockPrice();
   }
 
-  @Cron('0 12 2 * * *', {
+  @Cron('0 32 2 * * *', {
     timeZone: 'Asia/Seoul',
   })
   async sendFinancialReport() {
