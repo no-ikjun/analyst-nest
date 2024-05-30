@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import axios from 'axios';
+import { title } from 'process';
 import { KisService } from 'src/kis/kis.service';
 import { MessageService } from 'src/message/message.service';
 import { UserService } from 'src/user/user.service';
@@ -106,7 +107,8 @@ export class TaskService {
       }
       for (const messageUrl of messageUrlList) {
         await axios.post(messageUrl.url, {
-          text: `${user.email}님의 관심 종목 주가 알림 [국내주식]`,
+          title: '해외주식 주가 알림',
+          text: `${user.email}님의 관심 종목 주가 알림 [해외주식]`,
           username: 'AI Analyst',
           icon_emoji: ':robot_face:',
           attachments: attachments,
@@ -132,7 +134,7 @@ export class TaskService {
   }
 
   // 매일 오후 11시 30분에 실행
-  @Cron('0 20 21 * * *', {
+  @Cron('0 35 21 * * *', {
     timeZone: 'Asia/Seoul',
   })
   async handleCronAtStartOfAmericanMarket() {
