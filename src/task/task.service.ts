@@ -149,6 +149,7 @@ export class TaskService {
         stabilityRatio[0],
         growthRatio[0],
       );
+      return report;
       const messageUrlList = await this.messageService.findMessageByUserId(
         user.id,
       );
