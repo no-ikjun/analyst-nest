@@ -13,7 +13,7 @@ export class TaskService {
     private readonly messageService: MessageService,
   ) {}
   // 매일 오전 10시에 실행
-  @Cron('0 47 14 * * *', {
+  @Cron('0 50 14 * * *', {
     timeZone: 'Asia/Seoul',
   })
   async handleCronAtNoon() {
