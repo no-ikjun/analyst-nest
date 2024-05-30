@@ -13,11 +13,12 @@ export class TaskService {
     private readonly messageService: MessageService,
   ) {}
   // 매일 오전 10시에 실행
-  @Cron('0 30 14 * * *', {
+  @Cron('0 40 14 * * *', {
     timeZone: 'Asia/Seoul',
   })
   async handleCronAtNoon() {
     const users = await this.userService.getAllUsers();
+    const attachments = [];
     for (const user of users) {
       const interestList = await this.kisService.getInterestListByUserId(
         user.id,
@@ -29,38 +30,37 @@ export class TaskService {
         const stockPrice = await this.kisService.getRealTimeStockPrice(
           interestStock.code,
         );
+        attachments.push({
+          color: Number(stockPrice.prdy_ctrt) > 0 ? '#2eb886' : '#ff0000',
+          fields: [
+            {
+              title: '종목',
+              value: interestStock.prdt_abrv_name,
+              short: false,
+            },
+            {
+              title: '현재가',
+              value: Number(stockPrice.stck_prpr).toLocaleString() + '원',
+              short: false,
+            },
+            {
+              title: '전일대비',
+              value:
+                Number(stockPrice.prdy_vrss).toLocaleString() +
+                '원' +
+                ' (' +
+                stockPrice.prdy_ctrt +
+                '%)',
+              short: false,
+            },
+          ],
+        });
         for (const messageUrl of messageUrlList) {
           await axios.post(messageUrl.url, {
             text: '관심 종목 주가 알림',
             username: 'AI Analyst',
             icon_emoji: ':robot_face:',
-            attachments: [
-              {
-                color: '#2eb886',
-                fields: [
-                  {
-                    title: '종목',
-                    value: interestStock.prdt_abrv_name,
-                    short: false,
-                  },
-                  {
-                    title: '현재가',
-                    value: Number(stockPrice.stck_prpr).toLocaleString() + '원',
-                    short: false,
-                  },
-                  {
-                    title: '전일대비',
-                    value:
-                      Number(stockPrice.prdy_vrss).toLocaleString() +
-                      '원' +
-                      ' (' +
-                      stockPrice.prdy_ctrt +
-                      '%)',
-                    short: false,
-                  },
-                ],
-              },
-            ],
+            attachments: attachments,
           });
         }
       }
