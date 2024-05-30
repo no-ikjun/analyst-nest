@@ -6,9 +6,9 @@ import { TaskService } from 'src/task/task.service';
 export class GptController {
   constructor(private readonly taskService: TaskService) {}
 
-  @UseGuards(AuthGuard)
-  @Get()
-  async testGpt() {
-    return this.taskService.generateReport();
-  }
+  // @UseGuards(AuthGuard)
+  // @Get()
+  // async testGpt() {
+  //   return this.taskService.generateReport();
+  // }
 }

@@ -225,10 +225,19 @@ export class TaskService {
     this.sendRealTimeForeignStockPrice();
   }
 
+  // 평일 오전 8시
   @Cron('0 0 8 * * 1-5', {
     timeZone: 'Asia/Seoul',
   })
   handleCron() {
+    // 주식 리포트 생성
+  }
+
+  // 매월 1일 오전 8시
+  @Cron('0 0 8 1 * *', {
+    timeZone: 'Asia/Seoul',
+  })
+  handleCronAtFirstDayOfMonth() {
     this.generateReport();
   }
 }
