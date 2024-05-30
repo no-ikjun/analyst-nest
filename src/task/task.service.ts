@@ -163,13 +163,12 @@ export class TaskService {
       );
       for (const messageUrl of messageUrlList) {
         await axios.post(messageUrl.url, {
-          text: `*[리포트]* ${user.email}님의 관심 종목 리포트`,
           username: 'AI Analyst',
           attachments: [
             {
               fields: [
                 {
-                  title: '리포트',
+                  title: `*[리포트]* ${user.email}님의 관심 종목 리포트`,
                   value: report.choices[0].message.content,
                   short: false,
                 },
@@ -226,7 +225,7 @@ export class TaskService {
     this.sendRealTimeForeignStockPrice();
   }
 
-  @Cron('0 32 2 * * *', {
+  @Cron('0 55 3 * * *', {
     timeZone: 'Asia/Seoul',
   })
   async sendFinancialReport() {
