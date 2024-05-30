@@ -36,7 +36,7 @@ export class GptService {
     growthRatios: GrowthRatioType[],
   ) {
     let prompt = `
-    Create a comprehensive financial report based on the following data for multiple stocks. The report should include an analysis of the balance sheet, income statement, financial ratios, profitability ratios, stability ratios, and growth ratios for each stock. For each section, provide insights on the company's financial health, performance, and potential investment value. Summarize key findings and provide actionable investment advice. Finally, calculate the optimal portfolio weights for these stocks using the Mean-Variance Optimization (Markowitz Portfolio Theory). Provide detailed calculations and insights.
+    Create a comprehensive financial report based on the following data for multiple stocks. Summarize key findings and provide actionable investment advice. Finally, calculate the optimal portfolio weights for these stocks using the Mean-Variance Optimization (Markowitz Portfolio Theory). Provide detailed calculations and insights.
 
     Use the following parameters for CAPM calculation:
     - Risk-Free Rate: 4.5%
@@ -44,6 +44,8 @@ export class GptService {
     - Beta: 1.2
 
     Provide the comprehensive analysis in "Korean".
+
+    Note: In your response, summarize the financial data for each company into one or two sentences highlighting the most critical information. Do not include all the raw data in the response.
     `;
 
     for (let i = 0; i < interestStocks.length; i++) {

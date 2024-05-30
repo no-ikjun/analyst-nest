@@ -142,12 +142,12 @@ export class TaskService {
           interest.code,
         );
         const growthRatio = await this.kisService.getGrowthRatio(interest.code);
-        balanceSheets.push(balanceSheet);
-        incomeStatements.push(incomeStatement);
-        financialRatios.push(financialRatio);
-        profitRatios.push(profitRatio);
-        stabilityRatios.push(stabilityRatio);
-        growthRatios.push(growthRatio);
+        balanceSheets.push(balanceSheet[0]);
+        incomeStatements.push(incomeStatement[0]);
+        financialRatios.push(financialRatio[0]);
+        profitRatios.push(profitRatio[0]);
+        stabilityRatios.push(stabilityRatio[0]);
+        growthRatios.push(growthRatio[0]);
       }
       const report = await this.gptService.generateFinancialReport(
         interestList,
@@ -163,14 +163,12 @@ export class TaskService {
       );
       for (const messageUrl of messageUrlList) {
         await axios.post(messageUrl.url, {
-          text: `*[리포트]* ${user.email}님의 관심 종목 리포트`,
           username: 'AI Analyst',
           attachments: [
             {
               fields: [
                 {
-                  title: '리포트',
-                  type: 'mrkdwn',
+                  title: `*[리포트]* ${user.email}님의 관심 종목 리포트`,
                   value: report.choices[0].message.content,
                   short: false,
                 },
@@ -227,7 +225,7 @@ export class TaskService {
     this.sendRealTimeForeignStockPrice();
   }
 
-  @Cron('0 32 2 * * *', {
+  @Cron('0 55 3 * * *', {
     timeZone: 'Asia/Seoul',
   })
   async sendFinancialReport() {

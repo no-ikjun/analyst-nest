@@ -16,7 +16,10 @@ import { MessageModule } from './message/message.module';
 
 @Module({
   imports: [
-    HttpModule,
+    HttpModule.register({
+      timeout: 5000 * 100,
+      maxRedirects: 5,
+    }),
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       cache: true,
