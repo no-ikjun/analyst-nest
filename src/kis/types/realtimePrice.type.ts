@@ -13,7 +13,7 @@ export type ForeignRealTimePriceType = {
   ///원환산당 당일가격
   t_xprc: string;
   ///전일대비
-  p_xdif: string;
+  t_xdif: string;
   ///원환상당 당일등락
   t_xrat: string;
 };

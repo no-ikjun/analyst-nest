@@ -57,9 +57,11 @@ export class TaskService {
       }
       for (const messageUrl of messageUrlList) {
         await axios.post(messageUrl.url, {
-          text: `[국내주식] ${user.email}님의 관심 종목 주가 알림`,
+          text: {
+            type: 'mrkdwn',
+            text: `*[국내주식]*\n${user.email}님의 관심 종목 주가 알림`,
+          },
           username: 'AI Analyst',
-          icon_emoji: ':robot_face:',
           attachments: attachments,
         });
       }
@@ -96,7 +98,7 @@ export class TaskService {
             {
               title: '전일대비',
               value:
-                Number(stockPrice.p_xdif).toLocaleString() +
+                Number(stockPrice.t_xdif).toLocaleString() +
                 '원' +
                 ' (' +
                 stockPrice.t_xrat +
@@ -108,9 +110,11 @@ export class TaskService {
       }
       for (const messageUrl of messageUrlList) {
         await axios.post(messageUrl.url, {
-          text: `[해외주식] ${user.email}님의 관심 종목 주가 알림`,
+          text: {
+            type: 'mrkdwn',
+            text: `*[해외주식]*\n${user.email}님의 관심 종목 주가 알림`,
+          },
           username: 'AI Analyst',
-          icon_emoji: ':robot_face:',
           attachments: attachments,
         });
       }
@@ -202,7 +206,7 @@ export class TaskService {
 
   // 매일 오전 2시에 실행
   // 미국장 중간 점검
-  @Cron('0 0 2 * * *', {
+  @Cron('0 10 2 * * *', {
     timeZone: 'Asia/Seoul',
   })
   async handleCronAtMiddleOfAmericanMarket() {
@@ -218,7 +222,7 @@ export class TaskService {
     this.sendRealTimeForeignStockPrice();
   }
 
-  @Cron('0 0 2 * * *', {
+  @Cron('0 12 2 * * *', {
     timeZone: 'Asia/Seoul',
   })
   async sendFinancialReport() {
