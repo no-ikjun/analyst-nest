@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import axios from 'axios';
-import { title } from 'process';
 import { KisService } from 'src/kis/kis.service';
 import { MessageService } from 'src/message/message.service';
 import { UserService } from 'src/user/user.service';
@@ -133,7 +132,7 @@ export class TaskService {
   }
 
   // 매일 오후 11시 30분에 실행
-  @Cron('0 35 21 * * *', {
+  @Cron('0 30 23 * * *', {
     timeZone: 'Asia/Seoul',
   })
   async handleCronAtStartOfAmericanMarket() {
