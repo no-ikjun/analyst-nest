@@ -149,7 +149,6 @@ export class TaskService {
         stabilityRatio[0],
         growthRatio[0],
       );
-      return report;
       const messageUrlList = await this.messageService.findMessageByUserId(
         user.id,
       );
@@ -164,7 +163,7 @@ export class TaskService {
               fields: [
                 {
                   title: '리포트',
-                  value: report,
+                  value: report.choices[0].message.content,
                   short: false,
                 },
               ],
