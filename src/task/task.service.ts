@@ -17,7 +17,6 @@ export class TaskService {
 
   async sendRealTimeStockPrice() {
     const users = await this.userService.getAllUsers();
-    const attachments = [];
     for (const user of users) {
       const interestList = await this.kisService.getInterestListByUserId(
         user.id,
@@ -25,6 +24,7 @@ export class TaskService {
       const messageUrlList = await this.messageService.findMessageByUserId(
         user.id,
       );
+      const attachments = [];
       for (const interestStock of interestList) {
         const stockPrice = await this.kisService.getRealTimeStockPrice(
           interestStock.code,
@@ -67,7 +67,6 @@ export class TaskService {
 
   async sendRealTimeForeignStockPrice() {
     const users = await this.userService.getAllUsers();
-    const attachments = [];
     for (const user of users) {
       const interestList = await this.kisService.getForeignInterestListByUserId(
         user.id,
@@ -75,6 +74,7 @@ export class TaskService {
       const messageUrlList = await this.messageService.findMessageByUserId(
         user.id,
       );
+      const attachments = [];
       for (const interestStock of interestList) {
         const stockPrice = await this.kisService.getRealTimeForeignStockPrice(
           interestStock.code,
@@ -180,64 +180,72 @@ export class TaskService {
     }
   }
 
-  // 매일 오전 10시에 실행
+  // 평일 오전 10시에 실행
   // 한국장 시작 직후
-  @Cron('0 0 10 * * *', {
+  @Cron('0 0 10 * * 1-5', {
     timeZone: 'Asia/Seoul',
   })
   async handleCronAtStartOfMarket() {
     this.sendRealTimeStockPrice();
   }
 
-  // 매일 오후 3시에 실행
+  // 평일 오전 12시 30분에 실행
+  // 한국장 중간 점검
+  @Cron('0 30 12 * * 1-5', {
+    timeZone: 'Asia/Seoul',
+  })
+  async handleCronAtMiddleOfMarket() {
+    this.sendRealTimeStockPrice();
+  }
+
+  // 평일 오후 3시에 실행
   // 한국장 종료 직전
-  @Cron('0 0 15 * * *', {
+  @Cron('0 0 15 * * 1-5', {
     timeZone: 'Asia/Seoul',
   })
   handleCronAtEndOfMarket() {
     this.sendRealTimeStockPrice();
   }
 
-  // 매일 오후 11시 30분에 실행
+  // 평일 오후 11시 30분에 실행
   // 미국장 시작 직후
-  @Cron('0 30 23 * * *', {
+  @Cron('0 30 23 * * 1-5', {
     timeZone: 'Asia/Seoul',
   })
   async handleCronAtStartOfAmericanMarket() {
     this.sendRealTimeForeignStockPrice();
   }
 
-  // 매일 오전 2시 30분에 실행
+  // 평일 오전 2시 30분에 실행
   // 미국장 중간 점검
-  @Cron('0 30 2 * * *', {
+  @Cron('0 30 2 * * 1-5', {
     timeZone: 'Asia/Seoul',
   })
   async handleCronAtMiddleOfAmericanMarket() {
     this.sendRealTimeForeignStockPrice();
   }
 
-  // 매일 오전 6시에 실행
+  // 평일 오전 6시에 실행
   // 미국장 종료 직전
-  @Cron('0 0 6 * * *', {
+  @Cron('0 0 6 * * 1-5', {
     timeZone: 'Asia/Seoul',
   })
   async handleCronAtEndOfAmericanMarket() {
     this.sendRealTimeForeignStockPrice();
   }
 
-  // 평일 오전 8시
-  @Cron('0 0 8 * * 1-5', {
+  @Cron('0 0 8 * * 1', {
     timeZone: 'Asia/Seoul',
   })
-  handleCron() {
-    // 주식 리포트 생성
-  }
+  // 매월 첫째 주 월요일 오전 8시
+  handleCronFirstMondayOfMonth() {
+    const now = new Date();
+    const day = now.getDate();
+    const weekDay = now.getDay();
+    const isFirstWeek = day <= 7;
 
-  // 매월 1일 오전 8시
-  @Cron('0 0 8 1 * *', {
-    timeZone: 'Asia/Seoul',
-  })
-  handleCronAtFirstDayOfMonth() {
-    this.generateReport();
+    if (isFirstWeek && weekDay === 1) {
+      this.generateReport();
+    }
   }
 }
