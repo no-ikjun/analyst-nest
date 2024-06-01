@@ -234,11 +234,18 @@ export class TaskService {
     this.sendRealTimeForeignStockPrice();
   }
 
-  // 매월 1일 오전 8시
-  @Cron('0 0 8 1 * *', {
+  @Cron('0 0 8 * * 1', {
     timeZone: 'Asia/Seoul',
   })
-  handleCronAtFirstDayOfMonth() {
-    this.generateReport();
+  // 매월 첫째 주 월요일 오전 8시
+  handleCronFirstMondayOfMonth() {
+    const now = new Date();
+    const day = now.getDate();
+    const weekDay = now.getDay();
+    const isFirstWeek = day <= 7;
+
+    if (isFirstWeek && weekDay === 1) {
+      this.generateReport();
+    }
   }
 }
