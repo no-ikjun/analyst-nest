@@ -139,7 +139,7 @@ export class GptService {
     growthRatio: GrowthRatioType,
   ) {
     let prompt = `
-    Create a comprehensive financial report based on the following data. The report should include an analysis of the balance sheet, income statement, financial ratios, profitability ratios, stability ratios, and growth ratios. For each section, provide insights on the company's financial health, performance, and potential investment value. Summarize key findings and provide actionable investment advice. Use investment theories, including the Capital Asset Pricing Model (CAPM), to evaluate the company's investment potential. Provide detailed calculations and insights.
+    Create a comprehensive financial report based on the following data. The report should include an analysis of the balance sheet, income statement, financial ratios, profitability ratios, stability ratios, and growth ratios. For each section, provide insights on the company's financial health, performance, and potential investment value. Provide detailed calculations and insights.
 
     Note: In your response, summarize the financial data for each company into one or two sentences highlighting the most critical information. Do not include all the raw data in the response.
     `;
@@ -209,12 +209,7 @@ export class GptService {
     `;
 
     prompt += `
-    Use the following parameters for CAPM calculation:
-    - Risk-Free Rate: 0.03
-    - Market Return: 0.08
-    - Beta: 1.2
-    
-    Provide a comprehensive analysis of this data, including insights on the company's financial health, performance trends, and investment potential. Highlight any areas of concern or notable strengths. Provide detailed calculations using the CAPM model and other relevant financial theories.
+    Provide a comprehensive analysis of this data, including insights on the company's financial health, performance trends, and investment potential. Highlight any areas of concern or notable strengths.
 
     Show me the financial report in "Korean".
     `;
