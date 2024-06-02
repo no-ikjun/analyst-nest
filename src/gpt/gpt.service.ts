@@ -131,6 +131,7 @@ export class GptService {
 
   async generateSingleStockReport(
     interestStock: Interest,
+    interestStockPrice: string,
     balanceSheet: BalanceSheetType,
     incomeStatement: OperatingProfitType,
     financialRatio: FinancialRatioType,
@@ -146,6 +147,8 @@ export class GptService {
 
     prompt += `
     종목: ${interestStock.code} - ${interestStock.prdt_abrv_name}
+    현재가: ₩${interestStockPrice}
+    
     Balance Sheet:
     - Reporting Date: ${balanceSheet.stac_yymm}
     - Current Assets: ${balanceSheet.cras}
@@ -211,7 +214,7 @@ export class GptService {
     prompt += `
     Provide a comprehensive analysis of this data, including insights on the company's financial health, performance trends, and investment potential. Highlight any areas of concern or notable strengths.
 
-    Analysis Example:
+    Analysis Example (Do not include in the response):
     - Maintain a "Buy" recommendation with a target price of 6,000 KRW. Despite the downward adjustment in annual performance projections due to poor 1Q24 performance, explain that this is due to temporary slowdowns in sales of secured group company volumes, not real estate market risks. Justify maintaining the target price.
     - Note that the target price is at an estimated PER of 8.7x for 2024, which is relatively high compared to the industry. However, highlight the potential for an increase in estimated EPS for 2024 due to the progress in group company sales.
     - Discuss recent stock price trends, including concerns about real estate PF risks and negative growth expectations, leading to a continued decline since the beginning of the year. 
