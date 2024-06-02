@@ -194,6 +194,9 @@ export class TaskService {
         user.id,
       );
       const interest = interestList[0];
+      const interestStockPrice = await this.kisService.getRealTimeStockPrice(
+        interest.code,
+      );
       const balanceSheet = await this.kisService.getBalanceSheet(interest.code);
       const incomeStatement = await this.kisService.getOperatingProfit(
         interest.code,
@@ -208,6 +211,7 @@ export class TaskService {
       const growthRatio = await this.kisService.getGrowthRatio(interest.code);
       const report = await this.gptService.generateSingleStockReport(
         interest,
+        interestStockPrice.stck_prpr,
         balanceSheet[0],
         incomeStatement[0],
         financialRatio[0],
