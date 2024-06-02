@@ -128,4 +128,101 @@ export class GptService {
 
     return completion;
   }
+
+  async generateSingleStockReport(
+    interestStock: Interest,
+    balanceSheet: BalanceSheetType,
+    incomeStatement: OperatingProfitType,
+    financialRatio: FinancialRatioType,
+    profitabilityRatio: ProfitRatioType,
+    stabilityRatio: StabilityRatioType,
+    growthRatio: GrowthRatioType,
+  ) {
+    let prompt = `
+    Create a comprehensive financial report based on the following data. The report should include an analysis of the balance sheet, income statement, financial ratios, profitability ratios, stability ratios, and growth ratios. For each section, provide insights on the company's financial health, performance, and potential investment value. Summarize key findings and provide actionable investment advice. Use investment theories, including the Capital Asset Pricing Model (CAPM), to evaluate the company's investment potential. Provide detailed calculations and insights.
+    `;
+
+    prompt += `
+    종목: ${interestStock.code} - ${interestStock.prdt_abrv_name}
+    Balance Sheet:
+    - Reporting Date: ${balanceSheet.stac_yymm}
+    - Current Assets: ${balanceSheet.cras}
+    - Fixed Assets: ${balanceSheet.fxas}
+    - Total Assets: ${balanceSheet.total_aset}
+    - Current Liabilities: ${balanceSheet.flow_lblt}
+    - Fixed Liabilities: ${balanceSheet.fix_lblt}
+    - Total Liabilities: ${balanceSheet.total_lblt}
+    - Capital: ${balanceSheet.cpfn}
+    - Capital Surplus: ${balanceSheet.cfp_surp}
+    - Retained Earnings: ${balanceSheet.prfi_surp}
+    - Total Equity: ${balanceSheet.total_cptl}
+
+    Income Statement:
+    - Reporting Date: ${incomeStatement.stac_yymm}
+    - Sales: ${incomeStatement.sale_account}
+    - Cost of Sales: ${incomeStatement.sale_cost}
+    - Gross Profit: ${incomeStatement.sale_totl_prfi}
+    - Depreciation: ${incomeStatement.depr_cost}
+    - SG&A Expenses: ${incomeStatement.sell_mang}
+    - Operating Profit: ${incomeStatement.bsop_prti}
+    - Non-operating Income: ${incomeStatement.bsop_non_ernn}
+    - Non-operating Expenses: ${incomeStatement.bsop_non_expn}
+    - Ordinary Profit: ${incomeStatement.op_prfi}
+    - Extraordinary Income: ${incomeStatement.spec_prfi}
+    - Extraordinary Loss: ${incomeStatement.spec_loss}
+    - Net Income: ${incomeStatement.thtr_ntin}
+
+    Financial Ratios:
+    - Reporting Date: ${financialRatio.stac_yymm}
+    - Sales Growth Rate: ${financialRatio.grs}
+    - Operating Profit Growth Rate: ${financialRatio.bsop_prfi_inrt}
+    - Net Income Growth Rate: ${financialRatio.ntin_inrt}
+    - ROE: ${financialRatio.roe_val}
+    - EPS: ${financialRatio.eps}
+    - Sales per Share: ${financialRatio.sps}
+    - BPS: ${financialRatio.bps}
+    - Retention Ratio: ${financialRatio.rsrv_rate}
+    - Debt Ratio: ${financialRatio.lblt_rate}
+
+    Profitability Ratios:
+    - Reporting Date: ${profitabilityRatio.stac_yymm}
+    - Return on Total Assets: ${profitabilityRatio.cptl_ntin_rate}
+    - Return on Equity: ${profitabilityRatio.self_cptl_ntin_inrt}
+    - Net Profit Margin: ${profitabilityRatio.sale_ntin_rate}
+    - Gross Profit Margin: ${profitabilityRatio.sale_totl_rate}
+    
+    Stability Ratios:
+    - Reporting Date: ${stabilityRatio.stac_yymm}
+    - Debt Ratio: ${stabilityRatio.lblt_rate}
+    - Dependency on Borrowings: ${stabilityRatio.bram_depn}
+    - Current Ratio: ${stabilityRatio.crnt_rate}
+    - Quick Ratio: ${stabilityRatio.quck_rate}
+
+    Growth Ratios:
+    - Reporting Date: ${growthRatio.stac_yymm}
+    - Sales Growth Rate: ${growthRatio.grs}
+    - Operating Profit Growth Rate: ${growthRatio.bsop_prfi_inrt}
+    - Equity Growth Rate: ${growthRatio.equt_inrt}
+    - Total Assets Growth Rate: ${growthRatio.totl_aset_inrt}
+    `;
+
+    prompt += `
+    Use the following parameters for CAPM calculation:
+    - Risk-Free Rate: 0.03
+    - Market Return: 0.08
+    - Beta: 1.2
+    
+    Provide a comprehensive analysis of this data, including insights on the company's financial health, performance trends, and investment potential. Highlight any areas of concern or notable strengths. Provide detailed calculations using the CAPM model and other relevant financial theories.
+
+    Show me the financial report in "Korean".
+    `;
+
+    const completion = await this.openai.chat.completions.create({
+      model: 'da',
+      messages: [{ role: 'system', content: prompt }],
+      max_tokens: 1500,
+    });
+
+    return completion;
+  }
 }

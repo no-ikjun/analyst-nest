@@ -173,7 +173,60 @@ export class TaskService {
             {
               fields: [
                 {
-                  title: `[리포트] ${
+                  title: `[포트폴리오 비중 계산] ${
+                    user.email.split('@')[0]
+                  }님의 관심 종목 리포트`,
+                  value: report.choices[0].message.content,
+                  short: false,
+                },
+              ],
+            },
+          ],
+        });
+      }
+    }
+  }
+
+  async generateSingleStockReport() {
+    const users = await this.userService.getAllUsers();
+    for (const user of users) {
+      const interestList = await this.kisService.getInterestListByUserId(
+        user.id,
+      );
+      const interest = interestList[0];
+      const balanceSheet = await this.kisService.getBalanceSheet(interest.code);
+      const incomeStatement = await this.kisService.getOperatingProfit(
+        interest.code,
+      );
+      const financialRatio = await this.kisService.getFinancialRatio(
+        interest.code,
+      );
+      const profitRatio = await this.kisService.getProfitRatio(interest.code);
+      const stabilityRatio = await this.kisService.getStabilityRatio(
+        interest.code,
+      );
+      const growthRatio = await this.kisService.getGrowthRatio(interest.code);
+      const report = await this.gptService.generateSingleStockReport(
+        interest,
+        balanceSheet[0],
+        incomeStatement[0],
+        financialRatio[0],
+        profitRatio[0],
+        stabilityRatio[0],
+        growthRatio[0],
+      );
+      const messageUrlList = await this.messageService.findMessageByUserId(
+        user.id,
+      );
+      for (const messageUrl of messageUrlList) {
+        await axios.post(messageUrl.url, {
+          username: 'AI Analyst',
+
+          attachments: [
+            {
+              fields: [
+                {
+                  title: `[단일 종목 분석 리포트] ${
                     user.email.split('@')[0]
                   }님의 관심 종목 리포트`,
                   value: report.choices[0].message.content,
