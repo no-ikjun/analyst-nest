@@ -141,14 +141,6 @@ export class GptService {
     let prompt = `
     Provide a detailed financial analysis and investment recommendation for a company based on the following data. The analysis should include a "Buy" recommendation and a target price of 6,000 KRW. Discuss the company's 1Q24 performance, annual performance projections, and the factors influencing these projections. Use the following format and details:
 
-    - Maintain a "Buy" recommendation with a target price of 6,000 KRW. Despite the downward adjustment in annual performance projections due to poor 1Q24 performance, explain that this is due to temporary slowdowns in sales of secured group company volumes, not real estate market risks. Justify maintaining the target price.
-    - Note that the target price is at an estimated PER of 8.7x for 2024, which is relatively high compared to the industry. However, highlight the potential for an increase in estimated EPS for 2024 due to the progress in group company sales.
-    - Discuss recent stock price trends, including concerns about real estate PF risks and negative growth expectations, leading to a continued decline since the beginning of the year. 
-    - Highlight key points for 2024 performance expectations:
-      1. Strong new order intake from group companies in the previous year (annual target of 1.3 trillion KRW, 1.39 trillion KRW as of 4Q23) leading to rapid sales recovery.
-      2. Improved financial structure rarely seen in small and medium-sized construction companies (debt ratio from 170.4% in 2022 to 97.7% in 2023).
-      3. Conservative new housing orders supporting gradual profit recovery expected from the bottom in 2024.
-
     Note: In your response, summarize the financial data for each company into one or two sentences highlighting the most critical information. Do not include all the raw data in the response.
     `;
 
@@ -218,6 +210,15 @@ export class GptService {
 
     prompt += `
     Provide a comprehensive analysis of this data, including insights on the company's financial health, performance trends, and investment potential. Highlight any areas of concern or notable strengths.
+
+    Analysis Example:
+    - Maintain a "Buy" recommendation with a target price of 6,000 KRW. Despite the downward adjustment in annual performance projections due to poor 1Q24 performance, explain that this is due to temporary slowdowns in sales of secured group company volumes, not real estate market risks. Justify maintaining the target price.
+    - Note that the target price is at an estimated PER of 8.7x for 2024, which is relatively high compared to the industry. However, highlight the potential for an increase in estimated EPS for 2024 due to the progress in group company sales.
+    - Discuss recent stock price trends, including concerns about real estate PF risks and negative growth expectations, leading to a continued decline since the beginning of the year. 
+    - Highlight key points for 2024 performance expectations:
+      1. Strong new order intake from group companies in the previous year (annual target of 1.3 trillion KRW, 1.39 trillion KRW as of 4Q23) leading to rapid sales recovery.
+      2. Improved financial structure rarely seen in small and medium-sized construction companies (debt ratio from 170.4% in 2022 to 97.7% in 2023).
+      3. Conservative new housing orders supporting gradual profit recovery expected from the bottom in 2024.
 
     Show me the financial report in "Korean".
     `;
