@@ -11,4 +11,10 @@ export class GptController {
   async testGpt() {
     return this.taskService.generateReport();
   }
+
+  @UseGuards(AuthGuard)
+  @Get('test')
+  async test() {
+    return this.taskService.generateSingleStockReport();
+  }
 }
