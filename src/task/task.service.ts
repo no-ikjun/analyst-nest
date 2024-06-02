@@ -193,7 +193,10 @@ export class TaskService {
       const interestList = await this.kisService.getInterestListByUserId(
         user.id,
       );
-      const interest = interestList[0];
+      const randomInterestIndex = Math.floor(
+        Math.random() * interestList.length,
+      );
+      const interest = interestList[randomInterestIndex];
       const interestStockPrice = await this.kisService.getRealTimeStockPrice(
         interest.code,
       );
