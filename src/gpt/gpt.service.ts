@@ -139,18 +139,11 @@ export class GptService {
     stabilityRatio: StabilityRatioType,
     growthRatio: GrowthRatioType,
   ) {
-    let prompt = `
+    const prompt = `
     Provide a detailed financial analysis and investment recommendation for a company based on the following data. The analysis should include a "Buy" recommendation and a target price of 6,000 KRW. Discuss the company's 1Q24 performance, annual performance projections, and the factors influencing these projections. Use the following format and details:
 
-    Note: In your response, summarize the financial data for each company into one or two sentences highlighting the most critical information. Do not include all the raw data in the response.
-
-    Analysis Example (Note: Do not use this verbatim, create your own analysis based on the data provided):
-    - Maintain a "Buy" recommendation with a target price of ??? KRW. Despite the downward adjustment in annual performance projections due to poor 1Q24 performance, explain that this is due to temporary slowdowns in sales of secured group company volumes, not real estate market risks. Justify maintaining the target price.
-    - Note that the target price is at an estimated PER of ???x for 2024, which is relatively high compared to the industry. However, highlight the potential for an increase in estimated EPS for 2024 due to the progress in group company sales.
-    - Highlight key points for 2024 performance expectations
-    `;
-
-    prompt += `
+    Note: Summarize the financial data for each company into one or two sentences highlighting the most critical information. Do not include all the raw data in the response.
+    
     종목: ${interestStock.code} - ${interestStock.prdt_abrv_name}
     현재가: ₩${interestStockPrice}
 
@@ -214,9 +207,7 @@ export class GptService {
     - Operating Profit Growth Rate: ${growthRatio.bsop_prfi_inrt}
     - Equity Growth Rate: ${growthRatio.equt_inrt}
     - Total Assets Growth Rate: ${growthRatio.totl_aset_inrt}
-    `;
 
-    prompt += `
     Provide a comprehensive analysis of this data, including insights on the company's financial health, performance trends, and investment potential. Highlight any areas of concern or notable strengths.
 
     Show me the financial report in "Korean".
