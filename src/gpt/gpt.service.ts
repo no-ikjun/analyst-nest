@@ -218,7 +218,7 @@ export class GptService {
     `;
 
     const completion = await this.openai.chat.completions.create({
-      model: 'da',
+      model: 'gpt-3.5-turbo',
       messages: [{ role: 'system', content: prompt }],
       max_tokens: 1500,
     });
