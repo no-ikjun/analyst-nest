@@ -10,10 +10,14 @@ import {
 import { KisService } from './kis.service';
 import { KisTokenResponseType } from 'src/global/types/response.type';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { TaskService } from 'src/task/task.service';
 
 @Controller('kis')
 export class KisController {
-  constructor(private readonly kisService: KisService) {}
+  constructor(
+    private readonly kisService: KisService,
+    private readonly taskService: TaskService,
+  ) {}
 
   @UseGuards(AuthGuard)
   @Get('kis-token')
@@ -79,5 +83,17 @@ export class KisController {
   @Get('realtime-price')
   async getBalanceSheet(@Query('code') code: string) {
     return this.kisService.getRealTimeStockPrice(code);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('realtime-price')
+  async sendRealtimePriceMessage() {
+    return this.taskService.sendRealTimeStockPrice();
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('foreign/realtime-price')
+  async sendRealtimeForeignPriceMessage() {
+    return this.taskService.sendRealTimeForeignStockPrice();
   }
 }

@@ -140,7 +140,7 @@ export class GptService {
     growthRatio: GrowthRatioType,
   ) {
     const prompt = `
-    Provide a detailed financial analysis and investment recommendation for a company based on the following data. The analysis should include a "Buy" recommendation and a target price. Discuss the company's performance, annual performance projections, and the factors influencing these projections. Use the following format and details:
+    Provide a detailed financial analysis and investment recommendation for a company based on the following data. The analysis should include a "Buy" or "Sell" recommendation and a target price. Discuss the company's performance, annual performance projections, and the factors influencing these projections. Use the following format and details:
 
     Note: Summarize the financial data for each company into one or two sentences highlighting the most critical information. Do not include all the raw data in the response.
     
