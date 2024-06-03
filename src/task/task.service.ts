@@ -17,6 +17,7 @@ export class TaskService {
 
   async sendRealTimeStockPrice() {
     const users = await this.userService.getAllUsers();
+    let attachments = [];
     for (const user of users) {
       const interestList = await this.kisService.getInterestListByUserId(
         user.id,
@@ -24,7 +25,7 @@ export class TaskService {
       const messageUrlList = await this.messageService.findMessageByUserId(
         user.id,
       );
-      const attachments = [];
+      attachments = [];
       for (const interestStock of interestList) {
         const stockPrice = await this.kisService.getRealTimeStockPrice(
           interestStock.code,
@@ -69,6 +70,7 @@ export class TaskService {
 
   async sendRealTimeForeignStockPrice() {
     const users = await this.userService.getAllUsers();
+    let attachments = [];
     for (const user of users) {
       const interestList = await this.kisService.getForeignInterestListByUserId(
         user.id,
@@ -76,7 +78,7 @@ export class TaskService {
       const messageUrlList = await this.messageService.findMessageByUserId(
         user.id,
       );
-      const attachments = [];
+      attachments = [];
       for (const interestStock of interestList) {
         const stockPrice = await this.kisService.getRealTimeForeignStockPrice(
           interestStock.code,
