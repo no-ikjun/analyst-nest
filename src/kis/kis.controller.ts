@@ -86,13 +86,13 @@ export class KisController {
   }
 
   @UseGuards(AuthGuard)
-  @Get('realtime-price')
+  @Get('msg/stock-price')
   async sendRealtimePriceMessage() {
     return this.taskService.sendRealTimeStockPrice();
   }
 
   @UseGuards(AuthGuard)
-  @Get('foreign/realtime-price')
+  @Get('msg/foreign/stock-price')
   async sendRealtimeForeignPriceMessage() {
     return this.taskService.sendRealTimeForeignStockPrice();
   }
