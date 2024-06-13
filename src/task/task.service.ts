@@ -22,6 +22,7 @@ export class TaskService {
       const interestList = await this.kisService.getInterestListByUserId(
         user.id,
       );
+      if (interestList.length === 0) continue;
       const messageUrlList = await this.messageService.findMessageByUserId(
         user.id,
       );
@@ -75,6 +76,7 @@ export class TaskService {
       const interestList = await this.kisService.getForeignInterestListByUserId(
         user.id,
       );
+      if (interestList.length === 0) continue;
       const messageUrlList = await this.messageService.findMessageByUserId(
         user.id,
       );
