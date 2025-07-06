@@ -17,10 +17,13 @@ export class Profile {
   interests: string;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
-  risk_profile: string; // 안정형, 중립형, 공격형 등
+  risk_profile: string;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
-  knowledge_level: string; // beginner, intermediate, advanced 등
+  knowledge_level: string;
+
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  asset_size: string;
 
   @CreateDateColumn()
   created_at: Date;
