@@ -28,8 +28,7 @@ export class ArticlesController {
     }
 
     const response = await this.httpService.axiosRef.post(
-      //TODO: Change this URL to the actual recommendation service URL
-      'http://localhost:8000/recommend/articles',
+      'https://wisemind-ai.ikjun.com/recommend/articles',
       {
         interests: profile.interests,
         riskProfile: profile.risk_profile,
