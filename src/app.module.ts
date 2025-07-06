@@ -13,6 +13,8 @@ import { KisModule } from './kis/kis.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TaskModule } from './task/task.module';
 import { MessageModule } from './message/message.module';
+import { ArticlesModule } from './article/article.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -39,6 +41,8 @@ import { MessageModule } from './message/message.module';
     ScheduleModule,
     TaskModule,
     MessageModule,
+    ArticlesModule,
+    ProfileModule,
   ],
   controllers: [AppController],
   providers: [AppService, DatabaseService, ConfigService],
