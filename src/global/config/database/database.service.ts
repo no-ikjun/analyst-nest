@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
+import { Article } from 'src/global/entities/article.entity';
 import { ForeignInterest } from 'src/global/entities/foreignInterest.entity';
 import { Interest } from 'src/global/entities/interest.entity';
 import { KisToken } from 'src/global/entities/kistoken.entity';
@@ -20,7 +21,7 @@ export class DatabaseService implements TypeOrmOptionsFactory {
       host: this.configService.get<string>('DATABASE_HOST'),
       database: this.configService.get<string>('DATABASE_NAME'),
       timezone: '+09:00',
-      entities: [User, Interest, KisToken, Message, ForeignInterest],
+      entities: [User, Interest, KisToken, Message, ForeignInterest, Article],
       synchronize: true,
     };
   }
